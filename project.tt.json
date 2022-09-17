@@ -1,0 +1,9 @@
+{
+  "miniprogramRoot": "./",
+  "projectname": "awu",
+  "appid": "tt0526739b9a181a4e01",
+  "setting": {
+    "es6": false,
+    "minified": false
+  }
+}

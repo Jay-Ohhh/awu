@@ -1,0 +1,139 @@
+$themeColor: #5dcbb5;
+
+.tab-container {
+  padding: 11PX 15PX 0;
+  overflow: auto;
+}
+
+.disable-scroll {
+  height: calc(100vh - 37PX);
+  overflow: hidden;
+}
+
+.list-item {
+  display: flex;
+  padding: 6PX 0;
+  border-top: 1px solid #eee;
+  cursor: pointer;
+
+  &:last-child {
+    // border-bottom: 1px solid #eee;
+  }
+
+  .content-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0 20px;
+
+    .content {
+      margin-bottom: 10px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+      word-break: break-all;
+      font-size: 26px;
+      color: #18191c;
+    }
+
+    .content-footer {
+      display: flex;
+      justify-content: space-between;
+
+      .title,
+      .link {
+        font-size: 25px;
+        color: #9499a0;
+      }
+
+      .link {
+        padding: 0 10px;
+      }
+    }
+
+  }
+}
+
+.loading-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900;
+  background-color: rgba($color: #fff, $alpha: .5);
+
+  .van-loading__spinner--circular {
+    border-width: 5rpx;
+  }
+}
+
+.draft-page {
+  font-size: 13PX;
+
+  .header {
+    color: #666;
+    text-align: center;
+  }
+
+  .title {
+    margin: 10PX 0 10PX 8PX;
+    color: #333;
+  }
+
+  .textarea-container {
+    &.is-web .van-field__control--textarea {
+      height: 380PX;
+
+      .taro-textarea {
+        height: 100%;
+        resize: none;
+        background-color: #fff;
+      }
+    }
+
+    .van-field {
+      padding: 5PX;
+      padding-bottom: 0;
+
+      &::after {
+        display: none;
+      }
+    }
+
+    .van-field__body--textarea {
+      padding: 10PX;
+      border: 1PX solid #e7e8e8;
+      border-radius: 5PX;
+
+      textarea {
+        font-size: 13PX;
+      }
+    }
+  }
+}
+
+.pull-refresh-text {
+  text-align: center;
+  color: #666;
+  font-size: 12PX;
+}
+
+.bottom-text {
+  padding-top: 3PX;
+  border-top: 1PX solid #eee;
+  font-size: 13PX;
+  color: #bbb;
+  text-align: center;
+}
+
+.van-dialog {
+  top: 48% !important;
+}
+
+.van-dialog__confirm {
+  color: $themeColor;
+}
