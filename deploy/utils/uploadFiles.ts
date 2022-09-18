@@ -10,20 +10,21 @@ async function uploadFiles(ssh: NodeSSH, config: DeployConfig) {
   // 如果命令都写在同一行，分号则是必需的
   // 注意if语句的空格
   await runCommand(ssh, `
+  if [ ! -d dist ];
+  then mkdir -p dist;
+  else
+  rm -rf dist/*;
+  fi;
+
   if [ ! -d backup ];
   then mkdir -p backup;
   fi;
-  for i in $(ls);
-  do if [ $i != backup ];
-  then rm -rf $i;
-  fi;
-  done
   `, config.deployDir)
 
   console.log(chalk.green('uploading..'));
   await ssh.putDirectory(
     path.join(process.cwd(), config.targetDir),
-    config.deployDir
+    config.deployDir + '/dist'
   ).then(() => {
     console.log(chalk.green('upload complete'));
   }).catch((err) => {

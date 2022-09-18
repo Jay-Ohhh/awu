@@ -1,5 +1,6 @@
 import path from 'path'
 import { Config } from 'node-ssh'
+import chalk from 'chalk'
 import dotenv from 'dotenv'
 
 dotenv.config({
@@ -26,6 +27,12 @@ export type DeployConfig = {
 }
 
 const { HOST, PORT, USERNAME, DEPLOY_DIR } = process.env
+
+if (!DEPLOY_DIR) {
+  console.log(chalk.red('Need to set DEPLOY_DIR in .env.production'));
+  process.exit()
+}
+
 const deployConfigs: DeployConfig[] = [
   {
     name: 'treedeep',

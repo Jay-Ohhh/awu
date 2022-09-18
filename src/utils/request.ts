@@ -53,7 +53,7 @@ const interceptor = async function (chain: Chain) {
 }
 
 async function request(options: Taro.request.Option<any, any>) {
-  const config = {
+  const config: Taro.request.Option<any, any> = {
     ...options,
     url: baseURL + options.url,
     header: {

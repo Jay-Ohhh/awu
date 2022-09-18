@@ -20,7 +20,7 @@ USERNAME = xxx
 SERVER_PWD = 'xxx'
 
 # ssh privateKeyPath
-PRIVATE_KEY_PATH = /Users/jay/.ssh/id_rsa
+# PRIVATE_KEY_PATH = /Users/jay/.ssh/id_rsa
 # passphrase (if privateKey need)
 # PASSPHRASE = 123456
 

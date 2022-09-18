@@ -1,9 +1,11 @@
 import React, { FC, useEffect, useState, useRef, memo } from 'react'
 import Taro, { usePageScroll } from '@tarojs/taro'
-import { View, } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import VirtualList from '@tarojs/components/virtual-list'
-import { Tab, Tabs, Loading, Image, Field, Toast, Dialog, } from '@antmjs/vantui'
+import { Tab, Tabs, Loading, Image, Field, Toast, } from '@antmjs/vantui'
 import { PullRefresh } from "@taroify/core"
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css'; // This only needs to be imported once in your app
 import './index.scss'
 import { isWeb } from '../../utils/tools'
 import { request } from '../../utils/request'
@@ -90,7 +92,15 @@ const urlScheme: {
     },
   ]
 
-const List: FC<{ items: ItemProps[] }> = memo(({ items }) => {
+const List: FC<{
+  items: ItemProps[],
+  actions: {
+    setImgOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setImgIndex: React.Dispatch<React.SetStateAction<number>>;
+  }
+}> = memo(({ items, actions }) => {
+  const { setImgOpen, setImgIndex } = actions
+
   function toast(url: string) {
     let link: string = '';
     const flag = urlScheme.some(item => {
@@ -123,7 +133,7 @@ const List: FC<{ items: ItemProps[] }> = memo(({ items }) => {
 
   return (
     <>
-      {items.map(item => (
+      {items.map((item, index) => (
         <View className='list-item' key={item.id}>
           <a
             href={item.videoScheme}
@@ -151,20 +161,12 @@ const List: FC<{ items: ItemProps[] }> = memo(({ items }) => {
               {isWeb ? (
                 <a
                   className='link'
-                  href={item.productScheme}
+                  // href={item.productScheme}
                   onClick={() => {
-                    Dialog.alert({
-                      message: (
-                        <Image
-                          src={item.qualityImgUrl}
-                          width="100%"
-                          fit="heightFix"
-                          renderError={<View>加载失败</View>}
-                        />
-                      ),
-                      selector: 'dialog-img',
-                      closeOnClickOverlay: true,
-                    })
+                    if (item.image) {
+                      setImgIndex(index)
+                      setImgOpen(true)
+                    }
                   }}
                 >
                   视频商品：{item.product}
@@ -234,6 +236,12 @@ const Draft: FC = memo(() => {
   </View>
 })
 
+type ImgSrc = {
+  mainSrc: string;
+  prevSrc?: string;
+  nextSrc?: string;
+}
+
 const Index: FC = () => {
   const [activeIndex, setActiveIndex] = useState<number>(0)
   const [items, setItems] = useState<ItemProps[]>([])
@@ -245,8 +253,8 @@ const Index: FC = () => {
   let filterValue = useRef<string>(FilterValue[tabList[0].title]).current
   const isLoadAll = useRef(false)
   const isLoading = useRef(false)
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [dialogImg, setDialogImg] = useState<string>()
+  const [imgOpen, setImgOpen] = useState(false)
+  const [imgIndex, setImgIndex] = useState(0)
 
   const getData = async (config: Taro.request.Option, showLoad = true) => {
     try {
@@ -374,7 +382,7 @@ const Index: FC = () => {
                     : undefined}
                 >
                   {index < 3 ?
-                    <List items={items}></List>
+                    <List items={items} actions={{ setImgOpen, setImgIndex }} />
                     // <VirtualList
                     //   height={listHeight} /* 列表的高度 */
                     //   width='100%' /* 列表的宽度 */
@@ -406,14 +414,29 @@ const Index: FC = () => {
       </View>
     }
     <Toast id='toast-id' />
-    <Dialog
-      id='dialog-img'
-      closeOnClickOverlay
-    >
-      <Image
-        src=""
-      ></Image>
-    </Dialog>
+    {imgOpen && items[imgIndex].qualityImgUrl && (
+      <Lightbox
+        mainSrc={items[imgIndex].qualityImgUrl}
+        nextSrc={
+          imgIndex !== items.length - 1
+            ? items[(imgIndex + 1) % items.length].qualityImgUrl
+            : undefined
+        }
+        prevSrc={
+          imgIndex !== 0
+            ? items[(imgIndex + items.length - 1) % items.length].qualityImgUrl
+            : undefined
+        }
+        onCloseRequest={() => {
+          setImgOpen(false)
+        }}
+        onMovePrevRequest={() => {
+          setImgIndex(prev => (prev + items.length - 1) % items.length)
+        }}
+        onMoveNextRequest={() => {
+          setImgIndex(prev => (prev + items.length + 1) % items.length)
+        }}
+      />)}
   </>
 }
 export default Index

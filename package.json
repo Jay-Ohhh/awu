@@ -28,7 +28,7 @@
     "dev:jd": "npm run build:jd -- --watch",
     "dev:quickapp": "npm run build:quickapp -- --watch",
     "deploy-compile": "tsc -p deploy/tsconfig.json && nodemon deploy/index.js",
-    "helper":"ts-node --project deploy/tsconfig.json --files --esm deploy/index.ts",
+    "helper": "ts-node --project deploy/tsconfig.json --files --esm deploy/index.ts",
     "deploy:h5": "npm run build:h5 && npm run helper"
   },
   "browserslist": [
@@ -58,7 +58,8 @@
     "@tarojs/taro-h5": "3.5.1",
     "@types/inquirer": "^9.0.1",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "react-image-lightbox": "^5.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.8.0",
