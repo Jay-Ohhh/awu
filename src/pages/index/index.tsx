@@ -29,6 +29,7 @@ type ItemProps = {
   id: string | number;
   image: string;
   videoSrc: string;
+  productSrc: string;
   videoScheme: string;
   productScheme: string;
   product: string;
@@ -174,12 +175,12 @@ const List: FC<{
               ) : (
                 <View className='title'>视频商品：{item.product}</View>
               )}
-              {item.productScheme ? (
+              {item.productSrc ? (
                 <View
                   className='link copy-link'
                   onClick={(e) => {
                     e.preventDefault()
-                    Taro.setClipboardData({ data: item.productScheme })
+                    Taro.setClipboardData({ data: item.productSrc })
                   }}
                 >
                   复制链接
