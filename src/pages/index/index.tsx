@@ -160,7 +160,7 @@ const List: FC<{
             <View className='content-footer'>
               {isWeb ? (
                 <a
-                  className='link'
+                  className='link video-item-link'
                   // href={item.productScheme}
                   onClick={() => {
                     if (item.image) {
@@ -174,17 +174,17 @@ const List: FC<{
               ) : (
                 <View className='title'>视频商品：{item.product}</View>
               )}
-              {isWeb ? null : (
+              {item.productScheme ? (
                 <View
-                  className='link'
+                  className='link copy-link'
                   onClick={(e) => {
                     e.preventDefault()
-                    Taro.setClipboardData({ data: item.videoSrc })
+                    Taro.setClipboardData({ data: item.productScheme })
                   }}
                 >
                   复制链接
                 </View>
-              )}
+              ) : null}
             </View>
           </View>
         </View >

@@ -52,6 +52,17 @@ $themeColor: #5dcbb5;
       .link {
         padding: 0 10px;
       }
+
+      .video-item-link {
+        text-align: justify;
+      }
+
+      .copy-link {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        min-width: 60PX;
+      }
     }
 
   }
