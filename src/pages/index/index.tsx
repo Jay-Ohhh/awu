@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState, useRef, memo } from 'react'
 import Taro, { usePageScroll } from '@tarojs/taro'
-import { View } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import VirtualList from '@tarojs/components/virtual-list'
-import { Tab, Tabs, Loading, Image, Field, Toast, } from '@antmjs/vantui'
+import { Tab, Tabs, Loading, Image, Field, Toast } from '@antmjs/vantui'
 import { PullRefresh } from "@taroify/core"
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css'; // This only needs to be imported once in your app
@@ -180,7 +180,15 @@ const List: FC<{
                   className='link copy-link'
                   onClick={(e) => {
                     e.preventDefault()
-                    Taro.setClipboardData({ data: item.productSrc })
+                    Taro.setClipboardData({
+                      data: item.productSrc,
+                      success: isWeb ? () => {
+                        Toast.show({
+                          message: "内容已复制",
+                          duration: 1000,
+                        })
+                      } : undefined
+                    })
                   }}
                 >
                   复制链接
