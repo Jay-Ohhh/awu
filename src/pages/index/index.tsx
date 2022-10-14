@@ -1,15 +1,15 @@
-import React, { FC, useEffect, useState, useRef, memo } from 'react'
-import Taro, { usePageScroll } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
-import VirtualList from '@tarojs/components/virtual-list'
-import { Tab, Tabs, Loading, Image, Field, Toast } from '@antmjs/vantui'
-import { PullRefresh } from "@taroify/core"
+import React, { FC, useEffect, useState, useRef, memo } from 'react';
+import Taro, { usePageScroll } from '@tarojs/taro';
+import { View, Text } from '@tarojs/components';
+import VirtualList from '@tarojs/components/virtual-list';
+import { Tab, Tabs, Loading, Image, Field, Toast } from '@antmjs/vantui';
+import { PullRefresh } from "@taroify/core";
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css'; // This only needs to be imported once in your app
-import './index.scss'
-import { isWeb } from '../../utils/tools'
-import { request } from '../../utils/request'
-import { list } from '../../api'
+import './index.scss';
+import { isWeb } from '../../utils/tools';
+import { request } from '../../utils/request';
+import { list } from '../../api';
 
 const FilterValue: any = {};
 (function (obj) {
@@ -18,12 +18,12 @@ const FilterValue: any = {};
   obj[obj["QITA"] = "其他测评"] = "QITA";
 })(FilterValue);
 
-const tabList: { title: string }[] = [
+const tabList: { title: string; }[] = [
   { title: FilterValue.AWU },
   { title: FilterValue.YIFU },
   { title: FilterValue.QITA },
   { title: '参与投稿' },
-]
+];
 
 type ItemProps = {
   id: string | number;
@@ -35,7 +35,7 @@ type ItemProps = {
   product: string;
   qualityImgUrl: string;
   copyWriting: string;
-}
+};
 
 const maskValue = `一、喜欢的衣服阿吴来不及测，可以直接购买。衣服质量不错，是自己的梦中情衣，就可以拍成测评视频分享给姐妹们。
 
@@ -57,7 +57,7 @@ const maskValue = `一、喜欢的衣服阿吴来不及测，可以直接购买�
 （2）检测报告文案简单明了
 （3）特殊情况可以用其他方式结尾
 
-三、视频剪辑好后直接发到邮箱3304739058@qq.com进行审核。审核通过后，会发布到 阿吴和他的姐妹们 这个抖音号，并收录到我们的测评库（测评库是https://www.treedeep.cn/h5）
+三、视频剪辑好后直接发到邮箱3304739058@qq.com进行审核。审核通过后，会发布到 阿吴和他的姐妹们 这个抖音号，并收录到我们的测评库（测评库是 ${location.origin + location.pathname}）
 邮件格式为：
 1.标题：【测评投稿】xxxx（衣服名）
 2.邮件内容需要带上：
@@ -69,12 +69,12 @@ const maskValue = `一、喜欢的衣服阿吴来不及测，可以直接购买�
 四、视频一旦审核通过并采用，由阿吴承担衣服费用。没通过会回复邮件告知原因，可修改再次投稿。（目前试验阶段，审核会比较慢，以后会加快）
 
 注：拍摄方式按照阿吴拍摄的手法的方式，通过率会加大，一定要有大家关心的指标面料，做工，吸汗，透气，易皱，粘毛，起球，静电，掉色，缩水，变形，掉档，显苦茶子等等（根据衣服不同增减）
-`
+`;
 
 
-const TAOBAO_URL = 'https://market.m.taobao.com/app/fdilab/download-page/main/index.html'
-const DOUYIN_URL = 'https://www.douyin.com/home'
-const PINDUODUO_URL = 'https://lp.pinduoduo.com/poros/h5?ads_channel=baidu_seo&exp_id=115659&page_uid=85d568592f4e4496829fc9d3440f32d7-'
+const TAOBAO_URL = 'https://market.m.taobao.com/app/fdilab/download-page/main/index.html';
+const DOUYIN_URL = 'https://www.douyin.com/home';
+const PINDUODUO_URL = 'https://lp.pinduoduo.com/poros/h5?ads_channel=baidu_seo&exp_id=115659&page_uid=85d568592f4e4496829fc9d3440f32d7-';
 const urlScheme: {
   downloadUrl: string;
   schema: string;
@@ -91,26 +91,26 @@ const urlScheme: {
       downloadUrl: PINDUODUO_URL,
       schema: 'pinduoduo://'
     },
-  ]
+  ];
 
 const List: FC<{
   items: ItemProps[],
   actions: {
     setImgOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setImgIndex: React.Dispatch<React.SetStateAction<number>>;
-  }
+  };
 }> = memo(({ items, actions }) => {
-  const { setImgOpen, setImgIndex } = actions
+  const { setImgOpen, setImgIndex } = actions;
 
   function toast(url: string) {
     let link: string = '';
     const flag = urlScheme.some(item => {
       if (url.startsWith(item.schema)) {
-        link = item.downloadUrl
-        return true
+        link = item.downloadUrl;
+        return true;
       }
-      return false
-    })
+      return false;
+    });
 
     if (flag) {
       Toast.show({
@@ -128,7 +128,7 @@ const List: FC<{
           </View>
         ),
         duration: 2000,
-      })
+      });
     }
   }
 
@@ -165,8 +165,8 @@ const List: FC<{
                   // href={item.productScheme}
                   onClick={() => {
                     if (item.image) {
-                      setImgIndex(index)
-                      setImgOpen(true)
+                      setImgIndex(index);
+                      setImgOpen(true);
                     }
                   }}
                 >
@@ -179,16 +179,16 @@ const List: FC<{
                 <View
                   className='link copy-link'
                   onClick={(e) => {
-                    e.preventDefault()
+                    e.preventDefault();
                     Taro.setClipboardData({
                       data: item.productSrc,
                       success: isWeb ? () => {
                         Toast.show({
                           message: "内容已复制",
                           duration: 1000,
-                        })
+                        });
                       } : undefined
-                    })
+                    });
                   }}
                 >
                   复制链接
@@ -199,16 +199,16 @@ const List: FC<{
         </View >
       ))}
     </>
-  )
-})
+  );
+});
 
 const List1: FC<{
   id: string,
   index: number,
   style: React.CSSProperties,
-  data: ItemProps
+  data: ItemProps;
 }> = memo(({ id, index, data, style }) => {
-  const item = data[index]
+  const item = data[index];
   return <View id={id} key={item.id} className='list-item' style={style} onClick={() => {
   }}
   >
@@ -218,14 +218,14 @@ const List1: FC<{
       <View className='content-footer'>
         <View className='title'>{item.product}</View>
         <View className='link' onClick={(e) => {
-          e.preventDefault()
-          Taro.setClipboardData({ data: item.videoSrc })
+          e.preventDefault();
+          Taro.setClipboardData({ data: item.videoSrc });
         }}
         >复制链接</View>
       </View>
     </View>
-  </View>
-})
+  </View>;
+});
 
 const Draft: FC = memo(() => {
   return <View className='draft-page'>
@@ -242,100 +242,101 @@ const Draft: FC = memo(() => {
           { minHeight: '150px', maxHeight: '360px' }}
       />
     </View>
-  </View>
-})
+  </View>;
+});
 
 type ImgSrc = {
   mainSrc: string;
   prevSrc?: string;
   nextSrc?: string;
-}
+};
 
 const Index: FC = () => {
-  const [activeIndex, setActiveIndex] = useState<number>(0)
-  const [items, setItems] = useState<ItemProps[]>([])
-  const [loading, setLoading] = useState(false)
-  const [refresh, setRefresh] = useState(false)
-  const [reachTop, setReachTop] = useState(true)
-  let limit = useRef(10).current
-  const offsetRef = useRef(0)
-  let filterValue = useRef<string>(FilterValue[tabList[0].title]).current
-  const isLoadAll = useRef(false)
-  const isLoading = useRef(false)
-  const [imgOpen, setImgOpen] = useState(false)
-  const [imgIndex, setImgIndex] = useState(0)
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [items, setItems] = useState<ItemProps[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [refresh, setRefresh] = useState(false);
+  const [reachTop, setReachTop] = useState(true);
+  let limit = useRef(10).current;
+  const offsetRef = useRef(0);
+  const filterValueRef = useRef<string>(FilterValue[tabList[0].title]);
+  const isLoadAll = useRef(false);
+  const isLoading = useRef(false);
+  const [imgOpen, setImgOpen] = useState(false);
+  const [imgIndex, setImgIndex] = useState(0);
 
   const getData = async (config: Taro.request.Option, showLoad = true) => {
     try {
-      if (isLoading.current) return
-      showLoad && setLoading(true)
-      isLoading.current = true
+      if (isLoading.current) return;
+      showLoad && setLoading(true);
+      isLoading.current = true;
       /**
        * 接口不规范：
        * get方法
        * 直接返回了数组数组，而不是 data+total+message，需要通过空数组来判断无数据
        * 前端需要传参字段过多且不必要
        */
-      const res = await request(config)
+      const res = await request(config);
       if (res?.length === 0) {
-        isLoadAll.current = true
+        isLoadAll.current = true;
       } else {
-        isLoadAll.current = false
+        isLoadAll.current = false;
       }
-      return res
+      return res;
     } finally {
-      showLoad && setLoading(false)
-      isLoading.current = false
+      showLoad && setLoading(false);
+      isLoading.current = false;
     }
-  }
+  };
 
   const handleChange = async (e: any, config: Taro.request.Option, index?: number) => {
-    setActiveIndex(index ?? e.detail.index)
-    const res = await getData(config)
-    res && setItems(res)
-  }
+    setActiveIndex(index ?? e.detail.index);
+    const res = await getData(config);
+    res && setItems(res);
+  };
 
   function onPullFresh() {
-    if (refresh || isLoading.current) return
+    if (refresh || isLoading.current) return;
     offsetRef.current = 0;
     (async () => {
       try {
-        setRefresh(true)
+        setRefresh(true);
         const res = await getData(list({
           limit,
           offset: offsetRef.current,
           filterValue: FilterValue[tabList[activeIndex!].title]
-        }), false)
-        setItems(res)
+        }), false);
+        setItems(res);
       } finally {
-        setRefresh(false)
+        setRefresh(false);
       }
-    })()
+    })();
   }
 
   useEffect(() => {
     handleChange(undefined, list({
       limit,
       offset: offsetRef.current,
-      filterValue,
-    }), 0)
+      filterValue: filterValueRef.current,
+    }), 0);
     /* eslint-disable react-hooks/exhaustive-deps */
-  }, [])
+  }, []);
 
   usePageScroll(({ scrollTop }) => {
-    setReachTop(scrollTop === 0)
-  })
+    setReachTop(scrollTop === 0);
+  });
 
   function handleScroll(e: Event) {
-    if (isLoading.current || isLoadAll.current) return
+    if (isLoading.current || isLoadAll.current) return;
 
-    const ele = e.currentTarget as any
+    const ele = e.currentTarget as any;
     if (ele.clientHeight + ele.scrollTop >= ele.scrollHeight - 30) {
 
       offsetRef.current = offsetRef.current + limit;
-      getData(list({ limit, offset: offsetRef.current, filterValue })).then(res => {
-        setItems(prev => [...prev, ...res])
-      })
+      getData(list({ limit, offset: offsetRef.current, filterValue: filterValueRef.current }))
+        .then(res => {
+          setItems(prev => [...prev, ...res]);
+        });
     }
   }
 
@@ -347,22 +348,22 @@ const Index: FC = () => {
       lineWidth={120}
       onChange={(e) => {
         if (e.detail.index === tabList.length - 1) {
-          setActiveIndex(e.detail.index)
-          return
+          setActiveIndex(e.detail.index);
+          return;
         }
         offsetRef.current = 0;
-        filterValue = FilterValue[e.detail.title!]
+        filterValueRef.current = FilterValue[e.detail.title!];
         handleChange(e, list({
           limit,
           offset: offsetRef.current,
-          filterValue,
-        }))
+          filterValue: filterValueRef.current,
+        }));
       }}
     >
       {
         tabList.map((tab, index) => {
-          const windowInfo = Taro.getWindowInfo()
-          const listHeight = windowInfo.windowHeight - (isWeb ? 62 : 48)
+          const windowInfo = Taro.getWindowInfo();
+          const listHeight = windowInfo.windowHeight - (isWeb ? 62 : 48);
           return (
             <Tab
               key={index}
@@ -410,7 +411,7 @@ const Index: FC = () => {
                 </View>
               </PullRefresh>
             </Tab>
-          )
+          );
         })
       }
     </Tabs>
@@ -437,15 +438,15 @@ const Index: FC = () => {
             : undefined
         }
         onCloseRequest={() => {
-          setImgOpen(false)
+          setImgOpen(false);
         }}
         onMovePrevRequest={() => {
-          setImgIndex(prev => (prev + items.length - 1) % items.length)
+          setImgIndex(prev => (prev + items.length - 1) % items.length);
         }}
         onMoveNextRequest={() => {
-          setImgIndex(prev => (prev + items.length + 1) % items.length)
+          setImgIndex(prev => (prev + items.length + 1) % items.length);
         }}
       />)}
-  </>
-}
-export default Index
+  </>;
+};
+export default Index;

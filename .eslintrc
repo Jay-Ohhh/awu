@@ -7,6 +7,7 @@
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "jsx-quotes": "off",
-    "react/jsx-tag-spacing": "off"
+    "react/jsx-tag-spacing": "off",
+    "eslintno-restricted-globals":["event"]
   }
 }
