@@ -340,113 +340,115 @@ const Index: FC = () => {
     }
   }
 
-  return <>
-    <Tabs
-      swipeable
-      active={activeIndex}
-      color='#03ceb4'
-      lineWidth={120}
-      onChange={(e) => {
-        if (e.detail.index === tabList.length - 1) {
-          setActiveIndex(e.detail.index);
-          return;
-        }
-        offsetRef.current = 0;
-        filterValueRef.current = FilterValue[e.detail.title!];
-        handleChange(e, list({
-          limit,
-          offset: offsetRef.current,
-          filterValue: filterValueRef.current,
-        }));
-      }}
-    >
-      {
-        tabList.map((tab, index) => {
-          const windowInfo = Taro.getWindowInfo();
-          const listHeight = windowInfo.windowHeight - (isWeb ? 62 : 48);
-          return (
-            <Tab
-              key={index}
-              title={tab.title}
-            >
-              <PullRefresh
-                loading={refresh}
-                reachTop={reachTop}
-                onRefresh={onPullFresh}
-                disabled={activeIndex === tabList.length - 1}
-              >
-                <PullRefresh.Pulling>
-                  <View className='pull-refresh-text'>释放刷新</View>
-                </PullRefresh.Pulling>
-                <PullRefresh.Loosing>
-                  <View className='pull-refresh-text'>释放刷新</View>
-                </PullRefresh.Loosing>
-                <PullRefresh.Loading>
-                  <View className='pull-refresh-text'>加载中...</View>
-                </PullRefresh.Loading>
-                <View
-                  className={loading ? 'tab-container disable-scroll' : 'tab-container'}
-                  style={{ height: isWeb ? "calc(100vh - 62PX)" : "calc(100vh - 48PX)" }}
-                  // @ts-ignore
-                  onScroll={(isWeb && activeIndex !== tabList.length - 1) ? handleScroll
-                    : undefined}
-                >
-                  {index < 3 ?
-                    <List items={items} actions={{ setImgOpen, setImgIndex }} />
-                    // <VirtualList
-                    //   height={listHeight} /* 列表的高度 */
-                    //   width='100%' /* 列表的宽度 */
-                    //   itemData={items} /* 渲染列表的数据 */
-                    //   itemCount={items.length} /*  渲染列表的长度 */
-                    //   itemSize={103}
-                    // >
-                    //   {List1}
-                    // </VirtualList>
-                    : <Draft />}
-                  {(isLoadAll.current && items.length
-                    && activeIndex !== tabList.length - 1) ?
-                    <View className='bottom-text'>已经到底了～</View> :
-                    null
-                  }
-                </View>
-              </PullRefresh>
-            </Tab>
-          );
-        })
-      }
-    </Tabs>
-    {
-      loading &&
-      <View
-        className='flex-center loading-mask'
+  return (
+    <div style={{ marginBottom: 50 }}>
+      <Tabs
+        swipeable
+        active={activeIndex}
+        color='#03ceb4'
+        lineWidth={120}
+        onChange={(e) => {
+          if (e.detail.index === tabList.length - 1) {
+            setActiveIndex(e.detail.index);
+            return;
+          }
+          offsetRef.current = 0;
+          filterValueRef.current = FilterValue[e.detail.title!];
+          handleChange(e, list({
+            limit,
+            offset: offsetRef.current,
+            filterValue: filterValueRef.current,
+          }));
+        }}
       >
-        <Loading color='#03ceb4' size={70} />
-      </View>
-    }
-    <Toast id='toast-id' />
-    {imgOpen && items[imgIndex].qualityImgUrl && (
-      <Lightbox
-        mainSrc={items[imgIndex].qualityImgUrl}
-        nextSrc={
-          imgIndex !== items.length - 1
-            ? items[(imgIndex + 1) % items.length].qualityImgUrl
-            : undefined
+        {
+          tabList.map((tab, index) => {
+            const windowInfo = Taro.getWindowInfo();
+            const listHeight = windowInfo.windowHeight - (isWeb ? 62 : 48);
+            return (
+              <Tab
+                key={index}
+                title={tab.title}
+              >
+                <PullRefresh
+                  loading={refresh}
+                  reachTop={reachTop}
+                  onRefresh={onPullFresh}
+                  disabled={activeIndex === tabList.length - 1}
+                >
+                  <PullRefresh.Pulling>
+                    <View className='pull-refresh-text'>释放刷新</View>
+                  </PullRefresh.Pulling>
+                  <PullRefresh.Loosing>
+                    <View className='pull-refresh-text'>释放刷新</View>
+                  </PullRefresh.Loosing>
+                  <PullRefresh.Loading>
+                    <View className='pull-refresh-text'>加载中...</View>
+                  </PullRefresh.Loading>
+                  <View
+                    className={loading ? 'tab-container disable-scroll' : 'tab-container'}
+                    style={{ height: isWeb ? "calc(100vh - 118PX)" : "calc(100vh - 100PX)" }}
+                    // @ts-ignore
+                    onScroll={(isWeb && activeIndex !== tabList.length - 1) ? handleScroll
+                      : undefined}
+                  >
+                    {index < 3 ?
+                      <List items={items} actions={{ setImgOpen, setImgIndex }} />
+                      // <VirtualList
+                      //   height={listHeight} /* 列表的高度 */
+                      //   width='100%' /* 列表的宽度 */
+                      //   itemData={items} /* 渲染列表的数据 */
+                      //   itemCount={items.length} /*  渲染列表的长度 */
+                      //   itemSize={103}
+                      // >
+                      //   {List1}
+                      // </VirtualList>
+                      : <Draft />}
+                    {(isLoadAll.current && items.length
+                      && activeIndex !== tabList.length - 1) ?
+                      <View className='bottom-text'>已经到底了～</View> :
+                      null
+                    }
+                  </View>
+                </PullRefresh>
+              </Tab>
+            );
+          })
         }
-        prevSrc={
-          imgIndex !== 0
-            ? items[(imgIndex + items.length - 1) % items.length].qualityImgUrl
-            : undefined
-        }
-        onCloseRequest={() => {
-          setImgOpen(false);
-        }}
-        onMovePrevRequest={() => {
-          setImgIndex(prev => (prev + items.length - 1) % items.length);
-        }}
-        onMoveNextRequest={() => {
-          setImgIndex(prev => (prev + items.length + 1) % items.length);
-        }}
-      />)}
-  </>;
+      </Tabs>
+      {/* {
+        loading &&
+        <View
+          className='flex-center loading-mask'
+        >
+          <Loading color='#03ceb4' size={70} />
+        </View>
+      } */}
+      <Toast id='toast-id' />
+      {imgOpen && items[imgIndex].qualityImgUrl && (
+        <Lightbox
+          mainSrc={items[imgIndex].qualityImgUrl}
+          nextSrc={
+            imgIndex !== items.length - 1
+              ? items[(imgIndex + 1) % items.length].qualityImgUrl
+              : undefined
+          }
+          prevSrc={
+            imgIndex !== 0
+              ? items[(imgIndex + items.length - 1) % items.length].qualityImgUrl
+              : undefined
+          }
+          onCloseRequest={() => {
+            setImgOpen(false);
+          }}
+          onMovePrevRequest={() => {
+            setImgIndex(prev => (prev + items.length - 1) % items.length);
+          }}
+          onMoveNextRequest={() => {
+            setImgIndex(prev => (prev + items.length + 1) % items.length);
+          }}
+        />)}
+    </div>
+  );
 };
 export default Index;

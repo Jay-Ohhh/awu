@@ -1,4 +1,4 @@
-const pxtransform = require('postcss-pxtransform')
+const pxtransform = require('postcss-pxtransform');
 
 const config = {
   projectName: 'awu',
@@ -48,7 +48,7 @@ const config = {
       }
     },
     webpackChain(chain) {
-      const lessRule = chain.module.rules.get('less')
+      const lessRule = chain.module.rules.get('less');
       const lessRuleCfg = {
         test: /@antmjs[\\/]vantui(.+?)\.less$/,
         oneOf: [
@@ -56,7 +56,7 @@ const config = {
             use: [],
           },
         ],
-      }
+      };
       lessRule.toConfig().oneOf[0].use.map((use) => {
         if (/postcss-loader/.test(use.loader)) {
           const newUse = {
@@ -67,7 +67,7 @@ const config = {
                 plugins: [],
               },
             },
-          }
+          };
           use.options.postcssOptions.plugins.map((xitem) => {
             if (xitem.postcssPlugin === 'postcss-pxtransform') {
               newUse.options.postcssOptions.plugins.push(
@@ -81,18 +81,18 @@ const config = {
                   },
                   selectorBlackList: [],
                 }),
-              )
+              );
             } else {
-              newUse.options.postcssOptions.plugins.push(xitem)
+              newUse.options.postcssOptions.plugins.push(xitem);
             }
-          })
-          lessRuleCfg.oneOf[0].use.push({ ...newUse })
+          });
+          lessRuleCfg.oneOf[0].use.push({ ...newUse });
         } else {
-          lessRuleCfg.oneOf[0].use.push({ ...use })
+          lessRuleCfg.oneOf[0].use.push({ ...use });
         }
-      })
-      chain.module.rule('vantuiLess').merge(lessRuleCfg)
-      lessRule.exclude.clear().add(/@antmjs[\\/]vantui/)
+      });
+      chain.module.rule('vantuiLess').merge(lessRuleCfg);
+      lessRule.exclude.clear().add(/@antmjs[\\/]vantui/);
     },
   },
   h5: {
@@ -110,7 +110,7 @@ const config = {
         config: {},
       },
       cssModules: {
-        enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
+        enable: true, // 默认为 false，如需使用 css modules 功能，则设为 true
         config: {
           namingPattern: 'module', // 转换模式，取值为 global/module
           generateScopedName: '[name]__[local]___[hash:base64:5]'
@@ -126,11 +126,11 @@ const config = {
       }
     }
   }
-}
+};
 
 module.exports = function (merge) {
   if (process.env.NODE_ENV === 'development') {
-    return merge({}, config, require('./dev'))
+    return merge({}, config, require('./dev'));
   }
-  return merge({}, config, require('./prod'))
-}
+  return merge({}, config, require('./prod'));
+};

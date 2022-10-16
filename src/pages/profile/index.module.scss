@@ -1,0 +1,52 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  :global {
+    .iconfont {
+      margin-right: 10PX;
+      font-size: 20PX;
+    }
+  }
+}
+
+.avatar {
+  width: 120PX;
+  margin-top: 38%;
+}
+
+.login-btn {
+  width: 200PX;
+  margin: 10PX 0;
+
+  .btn-text {
+    font-size: 20PX;
+  }
+}
+
+.form {
+  width: 220PX;
+
+  :global {
+    .weui-input {
+      text-align: center;
+      font-size: 18PX;
+      color: #7acab6;
+
+      &::placeholder {
+        color: #7acab6;
+      }
+    }
+
+    .van-cell::after {
+      border-color: #ddd;
+    }
+  }
+}
+
+.helper-text {
+  margin-top: 10PX;
+  color: #999;
+}

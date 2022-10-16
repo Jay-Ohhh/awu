@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: nowrap;
+  border-top: 1PX solid #eee;
+  background-color: rgba($color: #fff, $alpha: 0.95);
+}
+
+.item {
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  line-height: 1;
+  text-align: center;
+  display: flex;
+
+  :global {
+    .title {
+      font-size: 13PX;
+    }
+  }
+}

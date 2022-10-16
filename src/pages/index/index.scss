@@ -1,7 +1,5 @@
-$themeColor: #5dcbb5;
-
 .tab-container {
-  padding: 11PX 15PX 0;
+  padding: 11PX 15PX;
   overflow: auto;
 }
 
@@ -146,5 +144,5 @@ $themeColor: #5dcbb5;
 }
 
 .van-dialog__confirm {
-  color: $themeColor;
+  color: var(--primary-color);
 }
