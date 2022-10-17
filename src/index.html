@@ -15,6 +15,13 @@
     <script>
       <%= htmlWebpackPlugin.options.script %>
     </script>
+    <script>
+      var sch = new URL(location.href).searchParams
+      var code = sch.get('code')
+      if(sch.get('code')){
+        postMessage({code}, location.origin)
+      }
+  </script>
   </head>
   <body>
     <div id="app"></div>

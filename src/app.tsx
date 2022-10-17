@@ -50,7 +50,7 @@ const navBarStyle: CSSProperties = {
 
 const App: FC<{ children: ReactElement; }> = function (props) {
   useEffect(() => {
-    // console.log(location.search);
+
   }, []);
 
   return (
