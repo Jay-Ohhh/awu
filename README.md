@@ -1,18 +1,21 @@
 在项目根目录新建以下文件
 
+**.env**
+
+```
+BASE_URL = xxx
+DOUYIN_CLIENT_KEY = xxx
+```
+
 **.env.development**
 
 ```
-# API url
-BASE_URL = xxx
+
 ```
 
 **.env.production**
 
 ```
-# API url
-BASE_URL = xxx
-
 HOST = xxx
 
 USERNAME = xxx

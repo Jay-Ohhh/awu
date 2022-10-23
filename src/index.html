@@ -16,9 +16,9 @@
       <%= htmlWebpackPlugin.options.script %>
     </script>
     <script>
-      var sch = new URL(location.href).searchParams
-      var code = sch.get('code')
-      if(sch.get('code')){
+      const sch = new URL(location.href).searchParams
+      const code = sch.get('code')
+      if(code){
         postMessage({code}, location.origin)
       }
   </script>

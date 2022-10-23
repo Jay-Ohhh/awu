@@ -31,7 +31,6 @@ function showAuthWindow(options: ShowAuthWindowOptions) {
     return;
 
   const handleMessage = e => {
-    console.log(e);
     // get access_token via e.data.code
     callback?.(e.data);
     oauthWindow.onmessage = null;

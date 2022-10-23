@@ -1,11 +1,9 @@
-const path = require('path')
-require('dotenv').config({ path: path.join(process.cwd(), '.env.production') })
+const path = require('path');
+require('dotenv').config({ path: path.join(process.cwd(), '.env.production') });
 
 module.exports = {
   env: {
     NODE_ENV: '"production"',
-    // 需要 JSON.stringify
-    BASE_URL: JSON.stringify(process.env.BASE_URL || ''),
   },
   defineConstants: {
   },
@@ -44,7 +42,7 @@ module.exports = {
         publicPath: '//cdn.example.com/assets/', // CDN（协议相同）
         publicPath: '', // 相对于 HTML 页面（目录相同）
        */
-      chain.output.publicPath('')
+      chain.output.publicPath('');
     }
   }
-}
+};

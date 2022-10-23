@@ -1,11 +1,11 @@
-import path from 'path'
-import { Config } from 'node-ssh'
-import chalk from 'chalk'
-import dotenv from 'dotenv'
+import path from 'path';
+import { Config } from 'node-ssh';
+import chalk from 'chalk';
+import dotenv from 'dotenv';
 
 dotenv.config({
   path: path.join(process.cwd(), '.env.production')
-})
+});
 
 /**
  * name: 命令行提示信息
@@ -24,13 +24,16 @@ export type DeployConfig = {
   deployDir: string;
   compress?: boolean;
   backup?: boolean;
-}
+};
 
-const { HOST, PORT, USERNAME, DEPLOY_DIR } = process.env
+const HOST = process.env.HOST;
+const PORT = process.env.PORT;
+const USERNAME = process.env.USERNAME;
+const DEPLOY_DIR = process.env.DEPLOY_DIR;
 
 if (!DEPLOY_DIR) {
   console.log(chalk.red('Need to set DEPLOY_DIR in .env.production'));
-  process.exit()
+  process.exit();
 }
 
 const deployConfigs: DeployConfig[] = [
@@ -48,6 +51,6 @@ const deployConfigs: DeployConfig[] = [
     targetFile: `dist.zip`, // 目标文件
     deployDir: DEPLOY_DIR, // 远端目录
   }
-]
+];
 
-export { deployConfigs }
+export { deployConfigs };

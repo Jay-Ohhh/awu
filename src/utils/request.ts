@@ -5,10 +5,10 @@ import Taro, { Chain } from '@tarojs/taro';
 // 不允许直接使用 process, process.env，只能完整书写
 const baseURL = process.env.BASE_URL;
 
-let isRefresh = false
+let isRefresh = false;
 let access_token: string = '';
 let refresh_token: string = '';
-let reTryRequestList: ((token: string) => void)[] = []
+let reTryRequestList: ((token: string) => void)[] = [];
 
 const getTokenConfig: Taro.request.Option = {
   url: "https://www.treedeep.cn/oauth/token?grant_type=password&username=admin&password=admin",
@@ -16,7 +16,7 @@ const getTokenConfig: Taro.request.Option = {
   header: {
     Authorization: "Basic YXd1d2VhcHBhZG1pbjpZWGQxZDJWaGNIQTZZWEJ3V1RKNGNFQmFWelVoTUU="
   }
-}
+};
 
 const refreshTokenConfig: Taro.request.Option = {
   url: `http://www.treedeep.cn/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`,
@@ -24,33 +24,33 @@ const refreshTokenConfig: Taro.request.Option = {
   header: {
     Authorization: "Basic YXd1d2VhcHBhZG1pbjpZWGQxZDJWaGNIQTZZWEJ3V1RKNGNFQmFWelVoTUU="
   }
-}
+};
 
 async function refreshToken() {
-  const { data } = await Taro.request(refreshTokenConfig)
-  access_token = data.access_token
-  refresh_token = data.refresh_token
+  const { data } = await Taro.request(refreshTokenConfig);
+  access_token = data.access_token;
+  refresh_token = data.refresh_token;
 }
 
 const interceptor = async function (chain: Chain) {
-  const requestParams = chain.requestParams
-  const config = !access_token ? getTokenConfig : null
+  const requestParams = chain.requestParams;
+  const config = !access_token ? getTokenConfig : null;
 
   if (config) {
     return chain.proceed(config).then(res => {
-      access_token = res.data.access_token
-      refresh_token = res.data.refresh_token
+      access_token = res.data.access_token;
+      refresh_token = res.data.refresh_token;
       return chain.proceed({
         ...requestParams,
         header: {
           ...requestParams.header,
           Authorization: `Bearer ${access_token}`
         }
-      }).then(res1 => res1)
-    })
+      }).then(res1 => res1);
+    });
   }
-  return chain.proceed(requestParams).then(res1 => res1)
-}
+  return chain.proceed(requestParams).then(res1 => res1);
+};
 
 async function request(options: Taro.request.Option<any, any>) {
   const config: Taro.request.Option<any, any> = {
@@ -60,9 +60,9 @@ async function request(options: Taro.request.Option<any, any>) {
       ...options.header,
       // Authorization: `Bearer ${access_token}`
     }
-  }
+  };
   // Taro.addInterceptor(interceptor)
-  const { data } = await Taro.request(config)
+  const { data } = await Taro.request(config);
   if (data.error === "invalid_token") {
     const promise = new Promise((resolve) => {
       reTryRequestList.push(
@@ -73,23 +73,23 @@ async function request(options: Taro.request.Option<any, any>) {
             Authorization: `Bearer ${newToken}`
           }
         })) // 要使用最新的token
-      )
-    })
+      );
+    });
     if (!isRefresh) {
       try {
-        isRefresh = true
+        isRefresh = true;
         await refreshToken();
       } finally {
-        isRefresh = false
+        isRefresh = false;
       }
     }
     while (reTryRequestList.length > 0) {
-      const cb = reTryRequestList.shift()
-      cb?.(access_token)
+      const cb = reTryRequestList.shift();
+      cb?.(access_token);
     }
-    return promise
+    return promise;
   }
-  return data
+  return data;
 }
 
-export { request }
+export { request };

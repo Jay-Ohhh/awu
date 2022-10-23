@@ -1,4 +1,21 @@
 const pxtransform = require('postcss-pxtransform');
+const path = require("path");
+const dotenv = require("dotenv");
+
+const result = dotenv.config({
+  path: path.join(process.cwd(), '.env')
+});
+
+if (result.error) {
+  throw result.error;
+}
+
+const { parsed } = result;
+const customEnv = {};
+
+for (let k in parsed) {
+  customEnv[k] = JSON.stringify(parsed[k]);
+}
 
 const config = {
   projectName: 'awu',
@@ -11,6 +28,9 @@ const config = {
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
+  env: {
+    ...customEnv,
+  },
   plugins: [],
   defineConstants: {
   },

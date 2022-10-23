@@ -3,6 +3,11 @@ import { Button, Field } from "@antmjs/vantui";
 import { showAuthWindow } from "../../utils/tools";
 import avatar from '../../assets/images/avatar.svg';
 import styles from './index.module.scss';
+import { DOUYIN_CLIENT_KEY, env } from "../../utils/constant";
+
+const douyinRedirectUrl = location.origin;
+const douyinLoginUrl = 'https://open.douyin.com/platform/oauth/connect?' +
+  `client_key=${DOUYIN_CLIENT_KEY}&response_type=code&scope=SCOPE&redirect_uri=${douyinRedirectUrl}&state=${env}`;
 
 const Profile: FC = (props) => {
   const [code, setCode] = useState('');
@@ -17,10 +22,9 @@ const Profile: FC = (props) => {
           round
           onClick={() => {
             showAuthWindow({
-              // path: "https://open.douyin.com/platform/oauth/connect?client_key=CLIENT_KEY&response_type=code&scope=SCOPE&redirect_uri=REDIRECT_URI&state=STATE",
-              path: location.origin + '?code=123',
+              path: douyinLoginUrl,
               callback: (params) => {
-                // console.log(params);
+                console.log(params);
               }
             });
           }}
