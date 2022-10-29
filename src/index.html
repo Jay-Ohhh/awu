@@ -20,7 +20,7 @@
       const code = sch.get('code')
       console.log(code)
       if(code){
-        window.postMessage({code}, location.origin + location.pathname)
+        window.opener.postMessage({code}, location.origin + location.pathname)
       }
   </script>
   </head>
