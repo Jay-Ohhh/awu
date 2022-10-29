@@ -18,8 +18,9 @@
     <script>
       const sch = new URL(location.href).searchParams
       const code = sch.get('code')
+      console.log(code)
       if(code){
-        postMessage({code}, location.origin)
+        window.postMessage({code}, location.origin + location.pathname)
       }
   </script>
   </head>
