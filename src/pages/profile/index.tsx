@@ -5,9 +5,9 @@ import avatar from '../../assets/images/avatar.svg';
 import styles from './index.module.scss';
 import { DOUYIN_CLIENT_KEY, env } from "../../utils/constant";
 
-const douyinRedirectUrl = location.origin;
+const douyinRedirectUrl = "https://www.treedeep.cn";
 const douyinLoginUrl = 'https://open.douyin.com/platform/oauth/connect?' +
-  `client_key=${DOUYIN_CLIENT_KEY}&response_type=code&scope=SCOPE&redirect_uri=${douyinRedirectUrl}&state=${env}`;
+  `client_key=${DOUYIN_CLIENT_KEY}&response_type=code&scope=user_info&redirect_uri=${douyinRedirectUrl}&state=${env}`;
 
 const Profile: FC = (props) => {
   const [code, setCode] = useState('');

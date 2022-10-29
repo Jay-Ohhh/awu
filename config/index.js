@@ -119,6 +119,10 @@ const config = {
     publicPath: '/',
     staticDirectory: 'static',
     esnextModules: [/@antmjs[\\/]vantui/],
+    devServer: {
+      host: "127.0.0.1", // localhost
+      port: 9000,
+    },
     postcss: {
       autoprefixer: {
         enable: true,
