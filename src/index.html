@@ -18,7 +18,6 @@
     <script>
       const sch = new URL(location.href).searchParams
       const code = sch.get('code')
-      
       if(code){
         window.opener.postMessage({code}, location.origin + location.pathname)
       }
