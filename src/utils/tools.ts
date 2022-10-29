@@ -5,7 +5,6 @@ const isWeb = env === Taro.ENV_TYPE.WEB;
 
 type ShowAuthWindowOptions = {
   path: string;
-  callback: (props: { code: string | null; }) => void;
   windowName?: string;
   windowFeatures?: string;
 };
@@ -14,7 +13,6 @@ type ShowAuthWindowOptions = {
 function showAuthWindow(options: ShowAuthWindowOptions) {
   const {
     path,
-    callback,
     windowName = 'ConnectWithOAuth',
     windowFeatures = `
     location=0,
@@ -29,14 +27,6 @@ function showAuthWindow(options: ShowAuthWindowOptions) {
   const oauthWindow = window.open(path, windowName, windowFeatures);
   if (!oauthWindow)
     return;
-
-  const handleMessage = e => {
-    // get access_token via e.data.code
-    callback?.(e.data);
-    oauthWindow.onmessage = null;
-    oauthWindow.window.close();
-  };
-  oauthWindow.onmessage = handleMessage;
 
   return oauthWindow;
 }

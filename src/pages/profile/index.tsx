@@ -1,4 +1,4 @@
-import { useState, FC } from "react";
+import { useState, FC, useEffect, useRef } from "react";
 import { Button, Field } from "@antmjs/vantui";
 import { showAuthWindow } from "../../utils/tools";
 import avatar from '../../assets/images/avatar.svg';
@@ -11,6 +11,22 @@ const douyinLoginUrl = 'https://open.douyin.com/platform/oauth/connect?' +
 
 const Profile: FC = (props) => {
   const [code, setCode] = useState('');
+  const authWindowRef = useRef<Window>();
+
+  useEffect(() => {
+    const handleMessage = (e) => {
+      if (e.data.code) {
+        window.removeEventListener("message", handleMessage);
+        authWindowRef.current?.close();
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -21,11 +37,8 @@ const Profile: FC = (props) => {
           color="#5dcbb5"
           round
           onClick={() => {
-            showAuthWindow({
+            authWindowRef.current = showAuthWindow({
               path: douyinLoginUrl,
-              callback: (params) => {
-                console.log(params);
-              }
             });
           }}
         >
