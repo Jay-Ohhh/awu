@@ -1,7 +1,8 @@
 import Taro from '@tarojs/taro';
 
 const env = Taro.getEnv();
-const isWeb = env === Taro.ENV_TYPE.WEB;
+/** @deprecated use isBrowser */
+export const isWeb = env === Taro.ENV_TYPE.WEB;
 
 type ShowAuthWindowOptions = {
   path: string;
@@ -10,7 +11,7 @@ type ShowAuthWindowOptions = {
 };
 
 //Authorization popup window code
-function showAuthWindow(options: ShowAuthWindowOptions) {
+export function showAuthWindow(options: ShowAuthWindowOptions) {
   const {
     path,
     windowName = 'ConnectWithOAuth',
@@ -31,4 +32,38 @@ function showAuthWindow(options: ShowAuthWindowOptions) {
   return oauthWindow;
 }
 
-export { isWeb, showAuthWindow };
+export const isBrowser = !!(
+  typeof window !== 'undefined' &&
+  window.document &&
+  window.document.createElement
+);
+
+export type User = {
+  nickname: string;
+  open_id: string;
+  avatar?: string;
+  city?: string;
+  province?: string;
+  country?: string;
+  description?: string;
+  e_account_role?: string;
+  error_code?: string;
+  gender?: string;
+  union_id?: string;
+};
+
+export function getCurrentUser(): User | null {
+  if (!isBrowser) {
+    return null;
+  }
+
+  if (!window["douyinUserInfo"]) {
+    const json = localStorage.getItem("douyinUserInfo");
+
+    if (json) {
+      window["douyinUserInfo"] = JSON.parse(json);
+    }
+  }
+
+  return window["douyinUserInfo"] || null;
+}

@@ -1,4 +1,4 @@
-.container {
+.loginContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -10,43 +10,85 @@
       font-size: 20PX;
     }
   }
-}
 
-.avatar {
-  width: 120PX;
-  margin-top: 38%;
-}
-
-.login-btn {
-  width: 200PX;
-  margin: 10PX 0;
-
-  .btn-text {
-    font-size: 20PX;
+  .avatar {
+    width: 120PX;
+    margin-top: 38%;
   }
-}
 
-.form {
-  width: 220PX;
+  .login-btn {
+    width: 200PX;
+    margin: 10PX 0;
 
-  :global {
-    .weui-input {
-      text-align: center;
-      font-size: 18PX;
-      color: #7acab6;
+    .btn-text {
+      font-size: 20PX;
+    }
+  }
 
-      &::placeholder {
+  .form {
+    width: 220PX;
+
+    :global {
+      .weui-input {
+        text-align: center;
+        font-size: 18PX;
         color: #7acab6;
+
+        &::placeholder {
+          color: #7acab6;
+        }
+      }
+
+      .van-cell::after {
+        border-color: #ddd;
       }
     }
+  }
 
-    .van-cell::after {
-      border-color: #ddd;
-    }
+  .helper-text {
+    margin-top: 10PX;
+    color: #999;
+  }
+
+}
+
+.profileContainer {
+  height: 100%;
+  font-size: 20PX;
+  color: #555;
+  background-color: #fafafa;
+
+  .avatarContainer {
+    padding: 10PX 15PX;
+    margin-bottom: 15PX;
+    box-shadow: 0 1PX 5PX rgba($color: #555, $alpha: 0.1);
+    background-color: #fff;
+  }
+
+  .avatar {
+    width: 50PX;
+    height: 50PX;
+    border-radius: 50%;
+  }
+
+  .nickname {
+    flex: 1;
+    margin-left: 15PX;
   }
 }
 
-.helper-text {
-  margin-top: 10PX;
-  color: #999;
+.itemContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10PX 15PX;
+  border-bottom: 1PX solid #ddd;
+  background-color: #fff;
+
+  :global {
+    .iconfont {
+      font-size: 18PX;
+      font-weight: 600;
+      color: #666;
+    }
+  }
 }

@@ -1,4 +1,6 @@
 import { FC, ReactElement, useEffect, CSSProperties } from 'react';
+import { Provider } from 'react-redux';
+import { useStore } from './store';
 import Taro from '@tarojs/taro';
 import NavBar, { NavBarProps } from './components/NavBar/NavBar';
 import './app.scss';
@@ -18,7 +20,12 @@ const navBarItems: NavBarProps['items'] = [
   {
     key: 'comment',
     icon: <span className='iconfont iconhot' style={{ fontSize: 30 }} />,
-    title: '测评'
+    title: '测评',
+    onClick: () => {
+      Taro.navigateTo({
+        url: '/pages/evaluationForm/index'
+      });
+    }
   },
   {
     key: 'contribution',
@@ -49,15 +56,13 @@ const navBarStyle: CSSProperties = {
 };
 
 const App: FC<{ children: ReactElement; }> = function (props) {
-  useEffect(() => {
-
-  }, []);
+  const store = useStore();
 
   return (
-    <>
+    <Provider store={store}>
       {props.children}
       <NavBar items={navBarItems} containerStyle={navBarStyle} />
-    </>
+    </Provider>
   );
 };
 
