@@ -12,7 +12,8 @@ import type { User } from "../../utils/tools";
 
 const douyinRedirectUrl = "https://www.treedeep.cn";
 const douyinLoginUrl = 'https://open.douyin.com/platform/oauth/connect?' +
-  `client_key=${DOUYIN_CLIENT_KEY}&response_type=code&scope=user_info,trial.whitelist&redirect_uri=${douyinRedirectUrl}&state=${env}`;
+  `client_key=${DOUYIN_CLIENT_KEY}&response_type=code&scope=user_info,trial.whitelist&` +
+  `redirect_uri=${douyinRedirectUrl}&state=${env}`;
 
 const mockUser: User = { avatar, nickname: "Jay", open_id: "123" };
 
@@ -38,7 +39,7 @@ const Profile: FC = (props) => {
     };
   }, []);
 
-  return !isLogin ? (
+  return isLogin ? (
     <div className={styles.loginContainer}>
       <img className={styles.avatar} src={avatar}></img>
       <div className={styles["login-btn"]}>
