@@ -1,6 +1,6 @@
-import type Taro from '@tarojs/taro'
+import type Taro from '@tarojs/taro';
 
-type RequestOption = Taro.request.Option
+type RequestOption = Taro.request.Option;
 
 export const list: (options: {
   limit: number;
@@ -30,4 +30,12 @@ export const list: (options: {
       ]
     }
   },
-})
+});
+
+export const api = {
+  getUserInfo: (params: { code: string; }): RequestOption => ({
+    method: "GET",
+    url: "/rest/douyin/userInfo",
+    data: params
+  })
+};

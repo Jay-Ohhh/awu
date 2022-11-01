@@ -8,6 +8,8 @@ import { DOUYIN_CLIENT_KEY, env } from "../../utils/constant";
 import { useCurrentUser } from "../../store";
 import isEmpty from "lodash/isEmpty";
 import clsx from 'clsx';
+import { api } from "../../api";
+import { request } from "../../utils/request";
 import type { User } from "../../utils/tools";
 
 const douyinRedirectUrl = "https://www.treedeep.cn";
@@ -25,10 +27,12 @@ const Profile: FC = (props) => {
   const isLogin = !isEmpty(userInfo);
 
   useEffect(() => {
-    const handleMessage = (e) => {
+    const handleMessage = async (e: MessageEvent) => {
       if (e.data.code) {
         window.removeEventListener("message", handleMessage);
         authWindowRef.current?.close();
+        const res = await request(api.getUserInfo({ code: e.data.code }));
+        console.log(res);
       }
     };
 
