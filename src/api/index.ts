@@ -33,7 +33,11 @@ export const list: (options: {
 });
 
 export const api = {
-  getUserInfo: (params: { code: string; }): RequestOption => ({
+  getUserInfo: (params: {
+    code?: string;
+    bloggerCode?: string;
+    openId?: string;
+  }): RequestOption => ({
     method: "GET",
     url: "/rest/douyin/userInfo",
     data: params

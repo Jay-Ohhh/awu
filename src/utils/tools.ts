@@ -41,6 +41,7 @@ export const isBrowser = !!(
 export type User = {
   nickname: string;
   open_id: string;
+  isBlogger?: boolean;
   avatar?: string;
   city?: string;
   province?: string;
@@ -57,13 +58,13 @@ export function getCurrentUser(): User | null {
     return null;
   }
 
-  if (!window["douyinUserInfo"]) {
-    const json = localStorage.getItem("douyinUserInfo");
+  if (!window["tiktokUserInfo"]) {
+    const json = sessionStorage.getItem("tiktokUserInfo");
 
     if (json) {
-      window["douyinUserInfo"] = JSON.parse(json);
+      window["tiktokUserInfo"] = JSON.parse(json);
     }
   }
 
-  return window["douyinUserInfo"] || null;
+  return window["tiktokUserInfo"] || null;
 }

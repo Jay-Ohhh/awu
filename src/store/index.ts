@@ -5,7 +5,7 @@ import rootReducer, { StoreActionType } from './reducers';
 import type { User } from '../utils/tools';
 
 export type StoreState = {
-  userInfo: User | {};
+  tiktokUserInfo: User | {};
 };
 
 export type StoreAction = Action<StoreActionType>;
@@ -50,12 +50,12 @@ export function useStore(initialState?: StoreState) {
   return store;
 }
 
-export function useCurrentUser() {
-  const userInfo = useSelector((store: StoreState) => store.userInfo) as User;
+export function useTiktokUser() {
+  const tiktokUserInfo = useSelector((store: StoreState) => store.tiktokUserInfo) as User;
   const dispatch = useDispatch<Dispatch<StoreAction>>();
-  const setUserInfo = (userInfo: User) => {
-    dispatch({ type: "set_userInfo", userInfo });
+  const setTiktokUserInfo = (userInfo: User) => {
+    dispatch({ type: "set_tiktokUserInfo", userInfo });
   };
 
-  return [userInfo, setUserInfo] as const;
+  return [tiktokUserInfo, setTiktokUserInfo] as const;
 }

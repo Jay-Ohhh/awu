@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { useStore } from './store';
 import Taro from '@tarojs/taro';
 import NavBar, { NavBarProps } from './components/NavBar/NavBar';
+import isEmpty from 'lodash/isEmpty';
 import './app.scss';
 import './assets/font/iconfont.css';
 
@@ -57,6 +58,24 @@ const navBarStyle: CSSProperties = {
 
 const App: FC<{ children: ReactElement; }> = function (props) {
   const store = useStore();
+
+  useEffect(() => {
+    const tiktokUserInfo = store.getState().tiktokUserInfo;
+    if (isEmpty(tiktokUserInfo)) {
+      let json: any = localStorage.getItem("tiktokCredential");
+
+      if (!json)
+        return;
+
+      json = JSON.parse(json);
+
+
+      if (json.openId && json.refresh_token < Date.now()) {
+        // 获取用户信息
+        // store.dispatch({ type: "set_tiktokUserInfo", userInfo: {} });
+      }
+    }
+  }, []);
 
   return (
     <Provider store={store}>

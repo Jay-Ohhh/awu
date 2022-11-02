@@ -5,7 +5,7 @@ import { showAuthWindow } from "../../utils/tools";
 import avatar from '../../assets/images/avatar.svg';
 import styles from './index.module.scss';
 import { DOUYIN_CLIENT_KEY, env } from "../../utils/constant";
-import { useCurrentUser } from "../../store";
+import { useTiktokUser } from "../../store";
 import isEmpty from "lodash/isEmpty";
 import clsx from 'clsx';
 import { api } from "../../api";
@@ -20,19 +20,22 @@ const douyinLoginUrl = 'https://open.douyin.com/platform/oauth/connect?' +
 const mockUser: User = { avatar, nickname: "Jay", open_id: "123" };
 
 const Profile: FC = (props) => {
-  const [code, setCode] = useState('');
+  const [bloggerCode, setBloggerCode] = useState('');
   const authWindowRef = useRef<Window>();
-  let [userInfo] = useCurrentUser();
-  userInfo = mockUser;
-  const isLogin = !isEmpty(userInfo);
+  let [tiktokUserInfo, setTiktokUserInfo] = useTiktokUser();
+  tiktokUserInfo = mockUser;
+  const isLogin = !isEmpty(tiktokUserInfo);
 
   useEffect(() => {
     const handleMessage = async (e: MessageEvent) => {
       if (e.data.code) {
         window.removeEventListener("message", handleMessage);
         authWindowRef.current?.close();
-        const res = await request(api.getUserInfo({ code: e.data.code }));
-        console.log(res);
+        const res = await request(api.getUserInfo({
+          code: e.data.code,
+          bloggerCode: bloggerCode.trim() || undefined
+        }));
+        // setTiktokUserInfo
       }
     };
 
@@ -63,10 +66,10 @@ const Profile: FC = (props) => {
       </div>
       <div className={styles.form}>
         <Field
-          value={code}
+          value={bloggerCode}
           placeholder="授权码"
           border
-          onChange={(e) => setCode(e.detail)}
+          onChange={(e) => setBloggerCode(e.detail)}
         />
       </div>
       <span className={styles['helper-text']}>博主首次登录需输入授权码</span>
@@ -74,8 +77,8 @@ const Profile: FC = (props) => {
   ) : (
     <div className={styles.profileContainer}>
       <div className={clsx('v-center', styles.avatarContainer)}>
-        <img className={styles.avatar} src={userInfo.avatar || avatar} alt="user-avatar" />
-        <span className={clsx("text-ellipsis", styles.nickname)}>{userInfo.nickname}</span>
+        <img className={styles.avatar} src={tiktokUserInfo.avatar || avatar} alt="user-avatar" />
+        <span className={clsx("text-ellipsis", styles.nickname)}>{tiktokUserInfo.nickname}</span>
       </div>
       <div
         className={styles.itemContainer}
