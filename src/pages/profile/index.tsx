@@ -12,6 +12,7 @@ import { api } from "../../api";
 import { request } from "../../utils/request";
 import type { User } from "../../utils/tools";
 
+// const douyinRedirectUrl = "https://www.treedeep.cn/awu/rest/callback/douyin?bzsqm=123456";
 const douyinRedirectUrl = "https://www.treedeep.cn";
 const douyinLoginUrl = 'https://open.douyin.com/platform/oauth/connect?' +
   `client_key=${DOUYIN_CLIENT_KEY}&response_type=code&scope=user_info,trial.whitelist&` +
@@ -35,6 +36,7 @@ const Profile: FC = (props) => {
           code: e.data.code,
           bloggerCode: bloggerCode.trim() || undefined
         }));
+        console.log(res);
         // setTiktokUserInfo
       }
     };
