@@ -12,6 +12,7 @@ import { api } from "../../api";
 import { request } from "../../utils/request";
 import type { User } from "../../utils/tools";
 
+// const douyinRedirectUrl = "https://www.treedeep.cn/awu/rest/callback/douyin?bzsqm=123456";
 const douyinRedirectUrl = "https://www.treedeep.cn";
 const douyinLoginUrl = 'https://open.douyin.com/platform/oauth/connect?' +
   `client_key=${DOUYIN_CLIENT_KEY}&response_type=code&scope=user_info,trial.whitelist&` +
@@ -31,7 +32,7 @@ const Profile: FC = (props) => {
       if (e.data.code) {
         window.removeEventListener("message", handleMessage);
         authWindowRef.current?.close();
-        const res = await request(api.getUserInfo({ code: e.data.code }));
+        const res = await request(api.getUserInfo({ code: e.data.code, blogger: "博主邀请码", openId: "_000d6dHgYv3amanx-tOLcIHL913xLzkffqO" }));
         console.log(res);
       }
     };
