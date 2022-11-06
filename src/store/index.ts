@@ -56,6 +56,13 @@ export function useTiktokUser() {
   const setTiktokUserInfo = (userInfo: User) => {
     dispatch({ type: "set_tiktokUserInfo", userInfo });
   };
+  const clearTiktokUserInfo = () => {
+    dispatch({ type: "clear_tiktokUserInfo" });
+  };
 
-  return [tiktokUserInfo, setTiktokUserInfo] as const;
+  return {
+    tiktokUserInfo,
+    setTiktokUserInfo,
+    clearTiktokUserInfo
+  };
 }

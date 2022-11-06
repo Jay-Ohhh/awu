@@ -1,16 +1,19 @@
-import { FC, ReactElement, useEffect, CSSProperties } from 'react';
+import React, { FC, ReactElement, useState, useEffect, CSSProperties } from 'react';
 import { Provider } from 'react-redux';
 import { useStore } from './store';
-import Taro from '@tarojs/taro';
+import Taro, { eventCenter } from '@tarojs/taro';
 import NavBar, { NavBarProps } from './components/NavBar/NavBar';
 import isEmpty from 'lodash/isEmpty';
+import { api } from './api';
+import { useTiktokUser } from './store';
 import './app.scss';
 import './assets/font/iconfont.css';
+import { request } from './utils/request';
 
-const navBarItems: NavBarProps['items'] = [
+const _navBarItems: (NavBarProps['items'][0] & { needAuth?: boolean; })[] = [
   {
     key: 'index',
-    icon: <span className='iconfont icontubiaozhizuomoban-' style={{ fontSize: 30 }} />,
+    icon: <span className='iconfont icontubiaozhizuomoban-' style={{ fontSize: 26 }} />,
     title: '首页',
     onClick: () => {
       Taro.navigateTo({
@@ -19,9 +22,10 @@ const navBarItems: NavBarProps['items'] = [
     }
   },
   {
-    key: 'comment',
-    icon: <span className='iconfont iconhot' style={{ fontSize: 30 }} />,
+    key: 'evaluationForm',
+    icon: <span className='iconfont iconhot' style={{ fontSize: 26 }} />,
     title: '测评',
+    needAuth: true,
     onClick: () => {
       Taro.navigateTo({
         url: '/pages/evaluationForm/index'
@@ -30,12 +34,13 @@ const navBarItems: NavBarProps['items'] = [
   },
   {
     key: 'contribution',
-    icon: <span className='iconfont icontougao' style={{ fontSize: 30 }} />,
-    title: '投稿'
+    icon: <span className='iconfont icontougao' style={{ fontSize: 26 }} />,
+    title: '投稿',
+    needAuth: true,
   },
   {
     key: 'profile',
-    icon: <span className='iconfont icon31wode' style={{ fontSize: 28 }} />,
+    icon: <span className='iconfont icon31wode' style={{ fontSize: 24 }} />,
     title: '我的',
     onClick: () => {
       Taro.navigateTo({
@@ -56,31 +61,74 @@ const navBarStyle: CSSProperties = {
   paddingBottom: 5
 };
 
+const NabBarContainer: FC = React.memo(() => {
+  const { tiktokUserInfo } = useTiktokUser();
+  const [activeKey, setActiveKey] = useState(location.hash.split('/')[2]);
+  let navBarItems = _navBarItems;
+
+  if (isEmpty(tiktokUserInfo)) {
+    navBarItems = navBarItems.filter(item => !item.needAuth);
+  }
+
+  useEffect(() => {
+    const handleRouteChange = ({ toLocation }: { toLocation: { path: string; }; }) => {
+      console.log(toLocation.path);
+      if (toLocation.path !== activeKey) {
+        setActiveKey(toLocation.path.split('/')[2]);
+      }
+    };
+
+    eventCenter.on('__taroRouterChange', handleRouteChange);
+
+    return () => {
+      eventCenter.off('__taroRouterChange', handleRouteChange);
+    };
+  }, []);
+
+  return (
+    <>
+      <NavBar activeKey={activeKey} items={navBarItems} containerStyle={navBarStyle} />
+    </>
+  );
+});
+
 const App: FC<{ children: ReactElement; }> = function (props) {
   const store = useStore();
 
   useEffect(() => {
-    const tiktokUserInfo = store.getState().tiktokUserInfo;
-    if (isEmpty(tiktokUserInfo)) {
-      let json: any = localStorage.getItem("tiktokCredential");
+    (async () => {
+      const tiktokUserInfo = store.getState().tiktokUserInfo;
+      if (isEmpty(tiktokUserInfo)) {
+        let json: any = localStorage.getItem("tiktokCredential");
 
-      if (!json)
-        return;
+        if (!json)
+          return;
 
-      json = JSON.parse(json);
+        json = JSON.parse(json);
 
+        if (json.openId && json.refreshExpiresIn > Date.now()) {
+          const res = await request(api.getUserInfo({
+            openId: json.openId
+          }));
 
-      if (json.openId && json.refresh_token < Date.now()) {
-        // 获取用户信息
-        // store.dispatch({ type: "set_tiktokUserInfo", userInfo: {} });
+          if (!res.code && res.data) {
+            store.dispatch({
+              type: "set_tiktokUserInfo",
+              userInfo: {
+                ...res.data.user,
+                refreshExpiresIn: res.data.refreshExpiresIn
+              }
+            });
+          }
+        }
       }
-    }
+    })();
   }, []);
 
   return (
     <Provider store={store}>
       {props.children}
-      <NavBar items={navBarItems} containerStyle={navBarStyle} />
+      <NabBarContainer />
     </Provider>
   );
 };

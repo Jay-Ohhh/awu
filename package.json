@@ -57,6 +57,7 @@
     "@tarojs/taro": "3.5.1",
     "@tarojs/taro-h5": "3.5.1",
     "@types/inquirer": "^9.0.1",
+    "ahooks": "^3.7.2",
     "clsx": "^1.2.1",
     "lodash": "^4.17.21",
     "react": "^18.0.0",

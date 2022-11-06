@@ -52,7 +52,7 @@ const interceptor = async function (chain: Chain) {
   return chain.proceed(requestParams).then(res1 => res1);
 };
 
-async function request(options: Taro.request.Option<any, any>) {
+async function request<T = any>(options: Taro.request.Option<any, any>): Promise<T> {
   const config: Taro.request.Option<any, any> = {
     ...options,
     url: baseURL + options.url,
@@ -87,7 +87,8 @@ async function request(options: Taro.request.Option<any, any>) {
       const cb = reTryRequestList.shift();
       cb?.(access_token);
     }
-    return promise;
+
+    return promise as Promise<T>;
   }
   return data;
 }

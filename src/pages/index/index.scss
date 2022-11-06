@@ -66,20 +66,6 @@
   }
 }
 
-.loading-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 900;
-  background-color: rgba($color: #fff, $alpha: .5);
-
-  .van-loading__spinner--circular {
-    border-width: 5rpx;
-  }
-}
-
 .draft-page {
   font-size: 13PX;
 

@@ -9,7 +9,7 @@
 
 .item {
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   height: 100%;
   line-height: 1;
   text-align: center;
@@ -17,7 +17,12 @@
 
   :global {
     .title {
-      font-size: 13PX;
+      margin-top: 2PX;
+      font-size: 12PX;
     }
   }
+}
+
+.disabled {
+  color: #bbb;
 }

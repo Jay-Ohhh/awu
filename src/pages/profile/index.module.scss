@@ -54,7 +54,7 @@
 
 .profileContainer {
   height: 100%;
-  font-size: 20PX;
+  font-size: 16PX;
   color: #555;
   background-color: #fafafa;
 
@@ -66,14 +66,28 @@
   }
 
   .avatar {
-    width: 50PX;
-    height: 50PX;
+    width: 40PX;
+    height: 40PX;
     border-radius: 50%;
   }
 
   .nickname {
-    flex: 1;
-    margin-left: 15PX;
+    margin: 0 10PX 0 15PX;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 1PX 6PX;
+    border-radius: 12PX;
+    font-size: 11PX;
+    color: #fff;
+    background-color: var(--primary-color);
+  }
+}
+
+.group {
+  .itemContainer:not(:last-child) {
+    border-bottom: 1PX solid #ddd;
   }
 }
 
@@ -81,12 +95,12 @@
   display: flex;
   justify-content: space-between;
   padding: 10PX 15PX;
-  border-bottom: 1PX solid #ddd;
+  font-size: 14PX;
   background-color: #fff;
 
   :global {
     .iconfont {
-      font-size: 18PX;
+      font-size: 14PX;
       font-weight: 600;
       color: #666;
     }

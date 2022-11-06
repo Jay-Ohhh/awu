@@ -41,6 +41,7 @@ export const isBrowser = !!(
 export type User = {
   nickname: string;
   open_id: string;
+  refreshExpiresIn: number;
   isBlogger?: boolean;
   avatar?: string;
   city?: string;
@@ -67,4 +68,24 @@ export function getCurrentUser(): User | null {
   }
 
   return window["tiktokUserInfo"] || null;
+}
+
+export function isUrl(url: string) {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function readBinary(text: string) {
+  const arrayBuffer = new ArrayBuffer(text.length);
+  const ui8a = new Uint8Array(arrayBuffer, 0);
+
+  for (let i = 0; i < text.length; i++) {
+    ui8a[i] = (text.charCodeAt(i) & 0xff);
+  }
+
+  return ui8a;
 }

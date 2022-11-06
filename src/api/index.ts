@@ -41,5 +41,23 @@ export const api = {
     method: "GET",
     url: "/rest/douyin/userInfo",
     data: params
+  }),
+  uploadFiles: (params: { file: string, name: string; header: RequestOption["header"]; }): RequestOption => ({
+    method: "POST",
+    url: `/rest/files?name=${params.name}`,
+    data: params.file,
+    header: params.header,
+  }),
+  postEvaluation: (data: {
+    fanUserOpenId: string;
+    videoUrl: string;
+    goodsUrl: string;
+    feedback: string;
+    orderPicture: string;
+  }): RequestOption => ({
+    method: "POST",
+    url: "/rest/entities/awu_TestBillOfLading",
+    data,
   })
 };
+

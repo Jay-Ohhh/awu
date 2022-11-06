@@ -13,6 +13,11 @@ function userInfo(state = initialState, action: Action): User | {} {
     case 'set_tiktokUserInfo': {
       const userInfo: Action['userInfo'] = action.userInfo;
       sessionStorage.setItem("tiktokUserInfo", JSON.stringify(userInfo));
+      localStorage.setItem("tiktokCredential", JSON.stringify({
+        openId: userInfo.open_id,
+        refreshExpiresIn: userInfo.refreshExpiresIn
+      }));
+
       window["tiktokUserInfo"] = userInfo;
 
       return action.userInfo;
@@ -26,6 +31,8 @@ function userInfo(state = initialState, action: Action): User | {} {
     }
     case 'clear_tiktokUserInfo': {
       sessionStorage.removeItem("tiktokUserInfo");
+      localStorage.removeItem("tiktokCredential");
+      window["tiktokUserInfo"] = null;
 
       return {};
     }

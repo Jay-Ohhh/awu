@@ -18,13 +18,12 @@ const douyinLoginUrl = 'https://open.douyin.com/platform/oauth/connect?' +
   `client_key=${DOUYIN_CLIENT_KEY}&response_type=code&scope=user_info,trial.whitelist&` +
   `redirect_uri=${douyinRedirectUrl}&state=${env}`;
 
-const mockUser: User = { avatar, nickname: "Jay", open_id: "123" };
+const mockUser: User = { avatar, nickname: "Jay", open_id: "123", refreshExpiresIn: 123 };
 
 const Profile: FC = (props) => {
   const [bloggerCode, setBloggerCode] = useState('');
   const authWindowRef = useRef<Window>();
-  let [tiktokUserInfo, setTiktokUserInfo] = useTiktokUser();
-  tiktokUserInfo = mockUser;
+  const { tiktokUserInfo, setTiktokUserInfo, clearTiktokUserInfo } = useTiktokUser();
   const isLogin = !isEmpty(tiktokUserInfo);
 
   useEffect(() => {
@@ -32,12 +31,25 @@ const Profile: FC = (props) => {
       if (e.data.code) {
         window.removeEventListener("message", handleMessage);
         authWindowRef.current?.close();
-        const res = await request(api.getUserInfo({
-          code: e.data.code,
-          bloggerCode: bloggerCode.trim() || undefined
-        }));
-        console.log(res);
-        // setTiktokUserInfo
+
+        const params: Parameters<typeof api.getUserInfo>[0] = { code: e.data.code, };
+        const _bloggerCode = bloggerCode.trim();
+
+        if (_bloggerCode) {
+          params.bloggerCode = _bloggerCode;
+        }
+        try {
+          const res = await request(api.getUserInfo(params));
+
+          if (!res.code && res.data) {
+            setTiktokUserInfo({
+              ...res.data.user,
+              refreshExpiresIn: res.data.refreshExpiresIn
+            });
+          }
+        } catch (e) {
+          console.error(e);
+        }
       }
     };
 
@@ -48,7 +60,7 @@ const Profile: FC = (props) => {
     };
   }, []);
 
-  return isLogin ? (
+  return !isLogin ? (
     <div className={styles.loginContainer}>
       <img className={styles.avatar} src={avatar}></img>
       <div className={styles["login-btn"]}>
@@ -81,19 +93,32 @@ const Profile: FC = (props) => {
       <div className={clsx('v-center', styles.avatarContainer)}>
         <img className={styles.avatar} src={tiktokUserInfo.avatar || avatar} alt="user-avatar" />
         <span className={clsx("text-ellipsis", styles.nickname)}>{tiktokUserInfo.nickname}</span>
+        {tiktokUserInfo.isBlogger ? <span className={styles["tag"]}>博主</span> : null}
+      </div>
+      <div className={styles.group}>
+        <div
+          className={styles.itemContainer}
+          onClick={() => {
+            Taro.navigateTo({
+              url: "pages/evaluation/index"
+            });
+          }}
+        >
+          <span>我的提单</span>
+          <span className="iconfont iconyou"></span>
+        </div>
       </div>
       <div
         className={styles.itemContainer}
-        onClick={() => {
-          Taro.navigateTo({
-            url: "pages/evaluation/index"
-          });
+        style={{
+          justifyContent: "center",
+          marginTop: 10
         }}
+        onClick={clearTiktokUserInfo}
       >
-        <span>我的提单</span>
-        <span className="iconfont iconyou"></span>
+        退出登录
       </div>
-    </div>
+    </div >
   );
 };
 

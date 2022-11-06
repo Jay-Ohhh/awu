@@ -13,8 +13,29 @@
   .card {
     margin-top: 6PX;
     border-radius: 5PX;
-    overflow: hidden;
     background-color: #fff;
+
+    &>div {
+      margin-top: 3PX;
+    }
+  }
+
+  .required-icon {
+    position: absolute;
+    left: 6PX;
+    color: var(--error-color);
+  }
+
+  .alert {
+    border: 1PX solid var(--error-color) !important;
+    border-radius: 5PX;
+    overflow: hidden;
+  }
+
+  .alert-msg {
+    padding: 0 16PX;
+    color: var(--error-color);
+    font-size: 13PX;
   }
 
   :global {
@@ -29,6 +50,10 @@
     .taro-textarea,
     .taro-textarea::placeholder {
       font-size: 14PX;
+    }
+
+    .van-cell--required::before {
+      left: 6PX;
     }
 
   }
