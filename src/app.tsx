@@ -6,9 +6,10 @@ import NavBar, { NavBarProps } from './components/NavBar/NavBar';
 import isEmpty from 'lodash/isEmpty';
 import { api } from './api';
 import { useTiktokUser } from './store';
+import { request } from './utils/request';
+import { history } from '@tarojs/router';
 import './app.scss';
 import './assets/font/iconfont.css';
-import { request } from './utils/request';
 
 const _navBarItems: (NavBarProps['items'][0] & { needAuth?: boolean; })[] = [
   {
@@ -72,7 +73,6 @@ const NabBarContainer: FC = React.memo(() => {
 
   useEffect(() => {
     const handleRouteChange = ({ toLocation }: { toLocation: { path: string; }; }) => {
-      console.log(toLocation.path);
       if (toLocation.path !== activeKey) {
         setActiveKey(toLocation.path.split('/')[2]);
       }
@@ -101,8 +101,15 @@ const App: FC<{ children: ReactElement; }> = function (props) {
       if (isEmpty(tiktokUserInfo)) {
         let json: any = localStorage.getItem("tiktokCredential");
 
-        if (!json)
+        if (!json) {
+          if (!["/pages/index/index", "/pages/profile/index"].includes(history.location.pathname)) {
+            Taro.redirectTo({
+              url: "/pages/index/index"
+            });
+          }
+
           return;
+        }
 
         json = JSON.parse(json);
 
