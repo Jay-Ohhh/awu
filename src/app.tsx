@@ -73,6 +73,15 @@ const NabBarContainer: FC = React.memo(() => {
 
   useEffect(() => {
     const handleRouteChange = ({ toLocation }: { toLocation: { path: string; }; }) => {
+      if (isEmpty(tiktokUserInfo) &&
+        !["/pages/index/index", "/pages/profile/index"].includes(history.location.pathname)
+      ) {
+        Taro.redirectTo({
+          url: "/pages/index/index"
+        });
+        return;
+      }
+
       if (toLocation.path !== activeKey) {
         setActiveKey(toLocation.path.split('/')[2]);
       }
@@ -101,15 +110,8 @@ const App: FC<{ children: ReactElement; }> = function (props) {
       if (isEmpty(tiktokUserInfo)) {
         let json: any = localStorage.getItem("tiktokCredential");
 
-        if (!json) {
-          if (!["/pages/index/index", "/pages/profile/index"].includes(history.location.pathname)) {
-            Taro.redirectTo({
-              url: "/pages/index/index"
-            });
-          }
-
+        if (!json)
           return;
-        }
 
         json = JSON.parse(json);
 
