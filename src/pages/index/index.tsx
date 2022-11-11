@@ -277,7 +277,7 @@ const Index: FC = () => {
        * 前端需要传参字段过多且不必要
        */
       const res = await request(config);
-      if (res?.length === 0) {
+      if (res.result.length === 0) {
         isLoadAll.current = true;
       } else {
         isLoadAll.current = false;
@@ -292,7 +292,9 @@ const Index: FC = () => {
   const handleChange = async (e: any, config: Taro.request.Option, index?: number) => {
     setActiveIndex(index ?? e.detail.index);
     const res = await getData(config);
-    res && setItems(res);
+    if (res.code === "2000" && res.result) {
+      setItems(res.result);
+    }
   };
 
   function onPullFresh() {
@@ -306,7 +308,9 @@ const Index: FC = () => {
           offset: offsetRef.current,
           filterValue: FilterValue[tabList[activeIndex!].title]
         }), false);
-        setItems(res);
+        if (res.code === "2000" && res.result) {
+          setItems(res.result);
+        }
       } finally {
         setRefresh(false);
       }
@@ -335,7 +339,9 @@ const Index: FC = () => {
       offsetRef.current = offsetRef.current + limit;
       getData(list({ limit, offset: offsetRef.current, filterValue: filterValueRef.current }))
         .then(res => {
-          setItems(prev => [...prev, ...res]);
+          if (res.code === "2000" && res.result) {
+            setItems(prev => [...prev, ...res.result]);
+          }
         });
     }
   }

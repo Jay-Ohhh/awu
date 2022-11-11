@@ -10,11 +10,12 @@ import { request } from './utils/request';
 import { history } from '@tarojs/router';
 import './app.scss';
 import './assets/font/iconfont.css';
+import "tailwindcss/tailwind.css";
 
 const _navBarItems: (NavBarProps['items'][0] & { needAuth?: boolean; })[] = [
   {
     key: 'index',
-    icon: <span className='iconfont icontubiaozhizuomoban-' style={{ fontSize: 26 }} />,
+    icon: <span className='iconfont icontubiaozhizuomoban-' style={{ fontSize: 22 }} />,
     title: '首页',
     onClick: () => {
       Taro.navigateTo({
@@ -24,7 +25,7 @@ const _navBarItems: (NavBarProps['items'][0] & { needAuth?: boolean; })[] = [
   },
   {
     key: 'evaluationForm',
-    icon: <span className='iconfont iconhot' style={{ fontSize: 26 }} />,
+    icon: <span className='iconfont iconhot' style={{ fontSize: 22 }} />,
     title: '测评',
     needAuth: true,
     onClick: () => {
@@ -35,13 +36,13 @@ const _navBarItems: (NavBarProps['items'][0] & { needAuth?: boolean; })[] = [
   },
   {
     key: 'contribution',
-    icon: <span className='iconfont icontougao' style={{ fontSize: 26 }} />,
+    icon: <span className='iconfont icontougao' style={{ fontSize: 22 }} />,
     title: '投稿',
     needAuth: true,
   },
   {
     key: 'profile',
-    icon: <span className='iconfont icon31wode' style={{ fontSize: 24 }} />,
+    icon: <span className='iconfont icon31wode' style={{ fontSize: 20 }} />,
     title: '我的',
     onClick: () => {
       Taro.navigateTo({
@@ -120,12 +121,12 @@ const App: FC<{ children: ReactElement; }> = function (props) {
             openId: json.openId
           }));
 
-          if (!res.code && res.data) {
+          if (res.code === "2000" && res.result) {
             store.dispatch({
               type: "set_tiktokUserInfo",
               userInfo: {
-                ...res.data.user,
-                refreshExpiresIn: res.data.refreshExpiresIn
+                ...res.result.user,
+                refreshExpiresIn: res.result.refreshExpiresIn
               }
             });
           }

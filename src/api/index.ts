@@ -1,4 +1,5 @@
 import type Taro from '@tarojs/taro';
+import { baseURL } from '../utils/request';
 
 type RequestOption = Taro.request.Option;
 
@@ -42,12 +43,20 @@ export const api = {
     url: "/rest/douyin/userInfo",
     data: params
   }),
-  uploadFiles: (params: { file: string, name: string; header: RequestOption["header"]; }): RequestOption => ({
-    method: "POST",
-    url: `/rest/files?name=${params.name}`,
-    data: params.file,
-    header: params.header,
-  }),
+  uploadFile: (data: FormData): [string, RequestInit] => ([
+    "/rest/files",
+    {
+      method: "POST",
+      body: data,
+    }
+  ]),
+  uploadFiles: (data: FormData): [string, RequestInit] => ([
+    "/rest/files/uploadFiles",
+    {
+      method: "POST",
+      body: data,
+    }
+  ]),
   postEvaluation: (data: {
     fanUserOpenId: string;
     videoUrl: string;

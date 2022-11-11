@@ -4,7 +4,7 @@ import type { UploaderProps } from '@antmjs/vantui/types/uploader';
 import type { ITouchEvent, } from '@tarojs/components';
 import { isUrl, readBinary } from "../../utils/tools";
 import { api } from "../../api";
-import { request } from "../../utils/request";
+import { request, $fetch } from "../../utils/request";
 import styles from './index.module.scss';
 import { useDebounceFn } from 'ahooks';
 
@@ -117,7 +117,7 @@ const evaluationForm: FC = () => {
 
         reader.readAsBinaryString(image.originalFileObj);
       });
-    })).then(async (files: { file: string, name: string; }[]) => {
+    })).then(async (files: { file: Uint8Array, name: string; }[]) => {
       const fileNameSlices = files[0].name.split(".");
       let fileExtension = fileNameSlices[fileNameSlices.length - 1];
 
@@ -125,20 +125,19 @@ const evaluationForm: FC = () => {
         fileExtension = 'png';
       }
 
-      const res = await request(api.uploadFiles({
-        ...files[0],
-        header: {
-          "Content-type": `image/${fileExtension}`
-        }
-      }));
-      // console.log("https://treedeep.cn/awu/rest/files?fileRef=" + res.fileRef);
+      const formData = new FormData();
+      formData.append("files", orderImages[0].originalFileObj);
+      const res = await $fetch(api.uploadFiles(formData));
+      // console.log("https://treedeep.cn/awu/rest/files?fileRef=" + res.result[0].fileRef);
+      if (!(res.code === "2000" && res.result[0]))
+        return;
 
       const res1 = await request(api.postEvaluation({
         fanUserOpenId: tiktokCredential.openId,
         videoUrl,
         goodsUrl,
         feedback,
-        orderPicture: res.fileRef
+        orderPicture: res.result[0].fileRef
       }));
 
       if (res1.id) {
@@ -274,8 +273,9 @@ const evaluationForm: FC = () => {
             style={{ height: "33px", padding: "10px 25px" }}
             round
             onClick={handleSubmit}
+            disabled
           >
-            <span>提交</span>
+            <span>提交（开发中）</span>
           </Button>
         </div>
       </div>

@@ -124,10 +124,10 @@ const config = {
       port: 9000,
     },
     postcss: {
+      tailwindcss: {},
       autoprefixer: {
         enable: true,
-        config: {
-        }
+        config: {},
       },
       pxtransform: {
         enable: true,

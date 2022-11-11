@@ -41,10 +41,10 @@ const Profile: FC = (props) => {
         try {
           const res = await request(api.getUserInfo(params));
 
-          if (!res.code && res.data) {
+          if (res.code === "2000" && res.result) {
             setTiktokUserInfo({
-              ...res.data.user,
-              refreshExpiresIn: res.data.refreshExpiresIn
+              ...res.result.user,
+              refreshExpiresIn: res.result.refreshExpiresIn
             });
           }
         } catch (e) {

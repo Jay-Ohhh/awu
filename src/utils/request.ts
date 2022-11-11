@@ -3,7 +3,7 @@ import Taro, { Chain } from '@tarojs/taro';
 /** @see https://docs.taro.zone/docs/envs#1-%E5%9C%A8%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%92%8C-h5-%E7%AB%AF%E5%88%86%E5%88%AB%E5%BC%95%E7%94%A8%E4%B8%8D%E5%90%8C%E8%B5%84%E6%BA%90 */
 // 不要解构 process.env 来获取环境变量，请直接以完整书写的方式（process.env.TARO_ENV）来进行使用。
 // 不允许直接使用 process, process.env，只能完整书写
-const baseURL = process.env.BASE_URL;
+export const baseURL = process.env.BASE_URL;
 
 let isRefresh = false;
 let access_token: string = '';
@@ -52,7 +52,7 @@ const interceptor = async function (chain: Chain) {
   return chain.proceed(requestParams).then(res1 => res1);
 };
 
-async function request<T = any>(options: Taro.request.Option<any, any>): Promise<T> {
+export async function request<T = any>(options: Taro.request.Option<any, any>): Promise<T> {
   const config: Taro.request.Option<any, any> = {
     ...options,
     url: baseURL + options.url,
@@ -92,5 +92,17 @@ async function request<T = any>(options: Taro.request.Option<any, any>): Promise
   }
   return data;
 }
+export async function $fetch(
+  props: Parameters<typeof fetch>,
+  resolveMethod: "json" | "text" | "arrayBuffer" | "blob" | "formData" = "json"
+) {
+  return await fetch(baseURL! + props[0], props[1]).then(res => {
+    if (!res.ok) {
+      return Promise.reject(res);
+    }
 
-export { request };
+    return res[resolveMethod]();
+  }).catch(e => {
+    return e;
+  });
+}
