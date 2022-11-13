@@ -13,8 +13,8 @@ export const list: (options: {
   data: {
     "limit": options.limit,
     "offset": options.offset,
-    "returnCount": true,
     "sort": "-createDate",
+    "returnCount": true,
     "fetchPlan": "we-app-list",
     "filter": {
       "group": "AND",
@@ -79,6 +79,7 @@ export const api = {
     data: {
       "limit": options.limit,
       "offset": options.offset,
+      "sort": "-createDate",
       "returnCount": true,
       "filter": {
         "group": "AND",
