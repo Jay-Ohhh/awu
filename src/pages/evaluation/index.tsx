@@ -8,7 +8,7 @@ import styles from './index.module.scss';
 
 type ItemProps = {
   id: string;
-  status: "verifying" | "verified";
+  status: "PROCESSED" | "PROCESSING";
   goodsUrl: string;
   videoUrl: string;
   feedback: string;
@@ -29,10 +29,10 @@ const List: FC<{ items: ItemProps[]; }> = (props) => {
           <div
             className={clsx(
               styles["item-header"],
-              item.status === "verifying" ? styles.primary : styles.warn,
+              item.status === "PROCESSED" ? styles.primary : styles.warn,
             )}
           >
-            {item.status === "verifying" ? "审核中" : "未审核"}
+            {item.status === "PROCESSED" ? "已审核" : "审核中"}
           </div>
           <div className={clsx("flex p-2")}>
             <div className="mr-3">

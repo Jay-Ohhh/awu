@@ -13,15 +13,20 @@ import './app.scss';
 import './assets/font/iconfont.css';
 import isMobile from 'ismobilejs';
 
+const handleNavBarItemClick = (pathname: string) => {
+  if (history.location.pathname === pathname)
+    return;
+
+  Taro.navigateTo({ url: pathname });
+};
+
 const _navBarItems: (NavBarProps['items'][0] & { needAuth?: boolean; })[] = [
   {
     key: 'index',
     icon: <span className='iconfont icontubiaozhizuomoban-' style={{ fontSize: 22 }} />,
     title: '首页',
     onClick: () => {
-      Taro.navigateTo({
-        url: '/pages/index/index'
-      });
+      handleNavBarItemClick('/pages/index/index');
     }
   },
   {
@@ -30,9 +35,7 @@ const _navBarItems: (NavBarProps['items'][0] & { needAuth?: boolean; })[] = [
     title: '测评',
     needAuth: true,
     onClick: () => {
-      Taro.navigateTo({
-        url: '/pages/evaluationForm/index'
-      });
+      handleNavBarItemClick('/pages/evaluationForm/index');
     }
   },
   {
@@ -46,9 +49,7 @@ const _navBarItems: (NavBarProps['items'][0] & { needAuth?: boolean; })[] = [
     icon: <span className='iconfont icon31wode' style={{ fontSize: 20 }} />,
     title: '我的',
     onClick: () => {
-      Taro.navigateTo({
-        url: '/pages/profile/index'
-      });
+      handleNavBarItemClick('/pages/profile/index');
     }
   },
 ];
