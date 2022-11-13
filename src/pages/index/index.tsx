@@ -393,7 +393,7 @@ const Index: FC = () => {
                   </PullRefresh.Loading>
                   <View
                     className={loading ? 'tab-container disable-scroll' : 'tab-container'}
-                    style={{ height: isWeb ? "calc(100vh - 118PX)" : "calc(100vh - 100PX)" }}
+                    style={{ height: "calc(100vh - 94PX)" }}
                     // @ts-ignore
                     onScroll={(isWeb && activeIndex !== tabList.length - 1) ? handleScroll
                       : undefined}

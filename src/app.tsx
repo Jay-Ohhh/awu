@@ -109,11 +109,11 @@ const Auth: FC<{ children: React.ReactElement; }> = React.memo((props) => {
   return (
     <div
       style={{
-        position: "relative",
-        width: "100%",
-        height: "100%",
+        position: "absolute",
+        top: 0,
+        bottom: 50,
         zIndex: 2,
-        minHeight: "calc(100vh - 50px)",
+        width: "100%",
         display: (isEmpty(tiktokUserInfo) &&
           !["/pages/index/index", "/pages/profile/index"].includes(history.location.pathname)
         ) ? "none" : "block",
@@ -154,7 +154,7 @@ const App: FC<{ children: ReactElement; }> = function (props) {
       if (!isEmpty(params)) {
         const res = await request(api.getUserInfo(params));
 
-        if (res.code === "2000" && res.result) {
+        if (["2000", "5001"].includes(res.code) && res.result) {
           window.history.replaceState({}, "", location.origin + location.pathname + location.hash);
 
           store.dispatch({
