@@ -13,6 +13,7 @@ export const list: (options: {
   data: {
     "limit": options.limit,
     "offset": options.offset,
+    "returnCount": true,
     "sort": "-createDate",
     "fetchPlan": "we-app-list",
     "filter": {
@@ -67,6 +68,29 @@ export const api = {
     method: "POST",
     url: "/rest/entities/awu_TestBillOfLading",
     data,
+  }),
+  getEvaluations: (options: {
+    limit: number;
+    offset: number;
+    openId: string;
+  }): RequestOption => ({
+    method: "POST",
+    url: "/rest/entities/awu_TestBillOfLading/search",
+    data: {
+      "limit": options.limit,
+      "offset": options.offset,
+      "returnCount": true,
+      "filter": {
+        "group": "AND",
+        "conditions": [
+          {
+            "operator": "=",
+            "property": "fanUserOpenId",
+            "value": options.openId
+          }
+        ]
+      }
+    },
   })
 };
 

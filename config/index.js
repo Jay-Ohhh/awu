@@ -31,6 +31,9 @@ const config = {
   env: {
     ...customEnv,
   },
+  alias: {
+    '@': path.resolve(__dirname, '..', 'src'),
+  },
   plugins: [],
   defineConstants: {
   },

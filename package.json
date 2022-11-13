@@ -59,6 +59,7 @@
     "@types/inquirer": "^9.0.1",
     "ahooks": "^3.7.2",
     "clsx": "^1.2.1",
+    "ismobilejs": "^1.1.1",
     "lodash": "^4.17.21",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

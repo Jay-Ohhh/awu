@@ -10,6 +10,7 @@ import isEmpty from "lodash/isEmpty";
 import clsx from 'clsx';
 import { api } from "../../api";
 import { request } from "../../utils/request";
+import isMobile from "ismobilejs";
 import type { User } from "../../utils/tools";
 
 // const douyinRedirectUrl = "https://www.treedeep.cn/awu/rest/callback/douyin?bzsqm=123456";
@@ -25,10 +26,11 @@ const Profile: FC = (props) => {
   const authWindowRef = useRef<Window>();
   const { tiktokUserInfo, setTiktokUserInfo, clearTiktokUserInfo } = useTiktokUser();
   const isLogin = !isEmpty(tiktokUserInfo);
+  const _isMobile = isMobile(window.navigator).any;
 
   useEffect(() => {
     const handleMessage = async (e: MessageEvent) => {
-      if (e.data.code) {
+      if (e.data.code && !_isMobile) {
         window.removeEventListener("message", handleMessage);
         authWindowRef.current?.close();
 
@@ -69,9 +71,13 @@ const Profile: FC = (props) => {
           color="#5dcbb5"
           round
           onClick={() => {
-            authWindowRef.current = showAuthWindow({
-              path: douyinLoginUrl,
-            });
+            if (_isMobile) {
+              location.href = douyinLoginUrl;
+            } else {
+              authWindowRef.current = showAuthWindow({
+                path: douyinLoginUrl,
+              });
+            }
           }}
         >
           <span className="iconfont icondouyin"></span>
@@ -83,7 +89,10 @@ const Profile: FC = (props) => {
           value={bloggerCode}
           placeholder="授权码"
           border
-          onChange={(e) => setBloggerCode(e.detail)}
+          onChange={(e) => {
+            localStorage.setItem("bloggerCode", e.detail);
+            setBloggerCode(e.detail);
+          }}
         />
       </div>
       <span className={styles['helper-text']}>博主首次登录需输入授权码</span>

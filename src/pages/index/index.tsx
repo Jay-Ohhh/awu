@@ -142,7 +142,7 @@ const List: FC<{
           //   toast(item.videoScheme)
           // }}
           >
-            <Image src={item.image} width={150} height={200} fit='cover' lazyLoad radius={8} />
+            <Image src={item.image} width={150} height={200} radius={8} fit='cover' lazyLoad />
           </a>
           <View className="content-container">
             {isWeb ? (
@@ -277,7 +277,7 @@ const Index: FC = () => {
        * 前端需要传参字段过多且不必要
        */
       const res = await request(config);
-      if (res.result.length === 0) {
+      if (res.result.data.length === 0) {
         isLoadAll.current = true;
       } else {
         isLoadAll.current = false;
@@ -292,8 +292,8 @@ const Index: FC = () => {
   const handleChange = async (e: any, config: Taro.request.Option, index?: number) => {
     setActiveIndex(index ?? e.detail.index);
     const res = await getData(config);
-    if (res.code === "2000" && res.result) {
-      setItems(res.result);
+    if (res.code === "2000" && res.result.data) {
+      setItems(res.result.data);
     }
   };
 
@@ -308,8 +308,8 @@ const Index: FC = () => {
           offset: offsetRef.current,
           filterValue: FilterValue[tabList[activeIndex!].title]
         }), false);
-        if (res.code === "2000" && res.result) {
-          setItems(res.result);
+        if (res.code === "2000" && res.result.data) {
+          setItems(res.result.data);
         }
       } finally {
         setRefresh(false);
@@ -339,15 +339,15 @@ const Index: FC = () => {
       offsetRef.current = offsetRef.current + limit;
       getData(list({ limit, offset: offsetRef.current, filterValue: filterValueRef.current }))
         .then(res => {
-          if (res.code === "2000" && res.result) {
-            setItems(prev => [...prev, ...res.result]);
+          if (res.code === "2000" && res.result.data) {
+            setItems(prev => [...prev, ...res.result.data]);
           }
         });
     }
   }
 
   return (
-    <div style={{ marginBottom: 50 }}>
+    <div>
       <Tabs
         swipeable
         active={activeIndex}

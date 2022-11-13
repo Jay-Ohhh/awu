@@ -1,8 +1,9 @@
-import React, { FC, ReactElement, useState, useEffect, CSSProperties } from 'react';
+import React, { FC, ReactElement, useState, CSSProperties, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { useStore } from './store';
 import Taro, { eventCenter } from '@tarojs/taro';
 import NavBar, { NavBarProps } from './components/NavBar/NavBar';
+import ErrorBoundary from './components/ErrorBoundary';
 import isEmpty from 'lodash/isEmpty';
 import { api } from './api';
 import { useTiktokUser } from './store';
@@ -10,7 +11,7 @@ import { request } from './utils/request';
 import { history } from '@tarojs/router';
 import './app.scss';
 import './assets/font/iconfont.css';
-import "tailwindcss/tailwind.css";
+import isMobile from 'ismobilejs';
 
 const _navBarItems: (NavBarProps['items'][0] & { needAuth?: boolean; })[] = [
   {
@@ -77,9 +78,8 @@ const NabBarContainer: FC = React.memo(() => {
       if (isEmpty(tiktokUserInfo) &&
         !["/pages/index/index", "/pages/profile/index"].includes(history.location.pathname)
       ) {
-        Taro.redirectTo({
-          url: "/pages/index/index"
-        });
+        location.href = location.origin + location.pathname;
+
         return;
       }
 
@@ -93,12 +93,32 @@ const NabBarContainer: FC = React.memo(() => {
     return () => {
       eventCenter.off('__taroRouterChange', handleRouteChange);
     };
-  }, []);
+  }, [tiktokUserInfo]);
 
   return (
     <>
       <NavBar activeKey={activeKey} items={navBarItems} containerStyle={navBarStyle} />
     </>
+  );
+});
+
+const Auth: FC<{ children: React.ReactElement; }> = React.memo((props) => {
+  const { tiktokUserInfo } = useTiktokUser();
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        zIndex: 2,
+        minHeight: "calc(100vh - 50px)",
+        display: (isEmpty(tiktokUserInfo) &&
+          !["/pages/index/index", "/pages/profile/index"].includes(history.location.pathname)
+        ) ? "none" : "block",
+      }}>
+      {props.children}
+    </div>
   );
 });
 
@@ -108,28 +128,41 @@ const App: FC<{ children: ReactElement; }> = function (props) {
   useEffect(() => {
     (async () => {
       const tiktokUserInfo = store.getState().tiktokUserInfo;
-      if (isEmpty(tiktokUserInfo)) {
-        let json: any = localStorage.getItem("tiktokCredential");
+      const searchParams = new URL(location.href).searchParams;
+      const code = searchParams.get("code");
+      const bloggerCode = localStorage["bloggerCode"];
+      const params: Parameters<typeof api.getUserInfo>[0] = {};
+
+      if (code && isMobile(window.navigator).any) {
+        code && (params.code = code);
+        bloggerCode && (params.bloggerCode = bloggerCode);
+        localStorage.removeItem("bloggerCode");
+      } else if (isEmpty(tiktokUserInfo)) {
+        let json: any = localStorage["tiktokCredential"]
+          ? JSON.parse(localStorage["tiktokCredential"])
+          : null;
 
         if (!json)
           return;
 
-        json = JSON.parse(json);
-
         if (json.openId && json.refreshExpiresIn > Date.now()) {
-          const res = await request(api.getUserInfo({
-            openId: json.openId
-          }));
+          params.openId = json.openId;
+        }
+      }
 
-          if (res.code === "2000" && res.result) {
-            store.dispatch({
-              type: "set_tiktokUserInfo",
-              userInfo: {
-                ...res.result.user,
-                refreshExpiresIn: res.result.refreshExpiresIn
-              }
-            });
-          }
+      if (!isEmpty(params)) {
+        const res = await request(api.getUserInfo(params));
+
+        if (res.code === "2000" && res.result) {
+          window.history.replaceState({}, "", location.origin + location.pathname + location.hash);
+
+          store.dispatch({
+            type: "set_tiktokUserInfo",
+            userInfo: {
+              ...res.result.user,
+              refreshExpiresIn: res.result.refreshExpiresIn
+            }
+          });
         }
       }
     })();
@@ -137,8 +170,12 @@ const App: FC<{ children: ReactElement; }> = function (props) {
 
   return (
     <Provider store={store}>
-      {props.children}
-      <NabBarContainer />
+      <ErrorBoundary>
+        <Auth>
+          {props.children}
+        </Auth>
+        <NabBarContainer />
+      </ErrorBoundary>
     </Provider>
   );
 };

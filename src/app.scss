@@ -1,5 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --primary-color: #5dcbb5;
+  --warn-color: #ffdd00;
   --error-color: #f44336;
 }
 
@@ -46,4 +51,12 @@
   .van-loading__spinner--circular {
     border-width: 5rpx;
   }
+}
+
+@mixin ellipse-line($line) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $line;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

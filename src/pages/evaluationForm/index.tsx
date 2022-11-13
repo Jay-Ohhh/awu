@@ -102,7 +102,6 @@ const evaluationForm: FC = () => {
     }
 
     setLoading(true);
-    (containerRef.current!.closest(".taro_page_show") as HTMLDivElement).style.zIndex = "auto";
 
     Promise.all(orderImages.map((image) => {
       return new Promise((resolve, reject) => {
@@ -140,7 +139,7 @@ const evaluationForm: FC = () => {
         orderPicture: res.result[0].fileRef
       }));
 
-      if (res1.id) {
+      if (res1.code === "2000") {
         setFormData({});
         setOrderImages([]);
         Notify.show({
@@ -150,11 +149,8 @@ const evaluationForm: FC = () => {
       }
 
       setLoading(false);
-      (containerRef.current!.closest(".taro_page_show") as HTMLDivElement).style.zIndex = "0";
     }).catch((e) => {
       setLoading(false);
-      (containerRef.current!.closest(".taro_page_show") as HTMLDivElement).style.zIndex = "0";
-
       console.error(e);
     });
   };
@@ -204,10 +200,11 @@ const evaluationForm: FC = () => {
           {errMap.videoUrl ? <div className={styles["alert-msg"]}>{errMap.videoUrl}</div> : null}
           <div className={errMap.feedback ? styles.alert : undefined}>
             <Field
-              value={formData.feedback || ""}
-              label="问题反馈"
-              required
               type="textarea"
+              label="问题反馈"
+              value={formData.feedback || ""}
+              maxlength={150}
+              required
               placeholder="请输入描述"
               autosize={{ minHeight: "30px" }}
               onChange={(e) => {
@@ -273,9 +270,8 @@ const evaluationForm: FC = () => {
             style={{ height: "33px", padding: "10px 25px" }}
             round
             onClick={handleSubmit}
-            disabled
           >
-            <span>提交（开发中）</span>
+            <span>提交</span>
           </Button>
         </div>
       </div>
