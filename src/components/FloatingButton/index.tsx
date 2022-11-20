@@ -4,7 +4,7 @@ import './index.scss';
 
 type FloatingButtonProps = {
   content: React.ReactNode;
-  translateX: string;
+  translateX?: string;
   placement?: "tr" | "tl" | "br" | "bl";
   className?: string;
   containerStyle?: CSSProperties;

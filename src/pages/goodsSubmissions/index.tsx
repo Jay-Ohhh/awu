@@ -149,6 +149,7 @@ const ItemSubmissions: FC = () => {
       </div>
       <FloatingButton
         className={clsx("pl-3", styles["floating-button"])}
+        open={true}
         content={(
           <div
             className="p-1 pl-0"
@@ -160,7 +161,6 @@ const ItemSubmissions: FC = () => {
             }}
           >我要投稿</div>
         )}
-        translateX="65px"
       />
       <Notify id="vanNotify" />
       {

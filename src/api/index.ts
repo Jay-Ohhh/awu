@@ -86,7 +86,7 @@ export const api = {
         "conditions": [
           {
             "operator": "=",
-            "property": "user",
+            "property": "userId",
             "value": options.userId
           }
         ]
