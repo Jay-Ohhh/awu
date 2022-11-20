@@ -10,6 +10,7 @@ import './index.scss';
 import { isWeb } from '../../utils/tools';
 import { request } from '../../utils/request';
 import { list } from '../../api';
+import clsx from 'clsx';
 
 const FilterValue: any = {};
 (function (obj) {
@@ -347,8 +348,9 @@ const Index: FC = () => {
   }
 
   return (
-    <div>
+    <div className={clsx("h-full", "list-page-container")}>
       <Tabs
+        className="h-full flex flex-col"
         swipeable
         active={activeIndex}
         color='#03ceb4'
@@ -375,12 +377,14 @@ const Index: FC = () => {
               <Tab
                 key={index}
                 title={tab.title}
+                style={{ height: "100%" }}
               >
                 <PullRefresh
                   loading={refresh}
                   reachTop={reachTop}
                   onRefresh={onPullFresh}
                   disabled={activeIndex === tabList.length - 1}
+                  style={{ height: "100%" }}
                 >
                   <PullRefresh.Pulling>
                     <View className='pull-refresh-text'>释放刷新</View>
@@ -391,9 +395,8 @@ const Index: FC = () => {
                   <PullRefresh.Loading>
                     <View className='pull-refresh-text'>加载中...</View>
                   </PullRefresh.Loading>
-                  <View
+                  <div
                     className={loading ? 'tab-container disable-scroll' : 'tab-container'}
-                    style={{ height: "calc(100vh - 94PX)" }}
                     // @ts-ignore
                     onScroll={(isWeb && activeIndex !== tabList.length - 1) ? handleScroll
                       : undefined}
@@ -415,7 +418,7 @@ const Index: FC = () => {
                       <View className='bottom-text'>已经到底了～</View> :
                       null
                     }
-                  </View>
+                  </div>
                 </PullRefresh>
               </Tab>
             );

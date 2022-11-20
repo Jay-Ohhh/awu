@@ -7,6 +7,7 @@ import { api } from "../../api";
 import { request, $fetch } from "../../utils/request";
 import styles from './index.module.scss';
 import { useDebounceFn } from 'ahooks';
+import { useTiktokUser } from '../../store';
 
 type Files = {
   originalFileObj: File;
@@ -16,13 +17,14 @@ type Files = {
   url: string;
 };
 
-const evaluationForm: FC = () => {
+const submissionForm: FC = () => {
   const [formData, setFormData] = useState<Record<string, string>>({});
   const [errMap, setErrMap] = useState<Record<string, string>>({});
   const [orderImages, setOrderImages] = useState<Files[]>([]);
   // const [orderVideos, setOrderVideos] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const { tiktokUserInfo } = useTiktokUser();
 
   const afterImageRead: UploaderProps['onAfterRead'] = (event) => {
     // file is a object if Multiple is false, otherwise it is a array.
@@ -47,11 +49,11 @@ const evaluationForm: FC = () => {
   const { run } = useDebounceFn((e: ITouchEvent, field: string) => {
     let isValid = false;
 
-    if (["goodsUrl", "videoUrl"].includes(field)
+    if (["goodsUrl", "goodsVideoUrl"].includes(field)
       && isUrl(e.detail)
     ) {
       isValid = true;
-    } else if (field === "feedback" && e.detail.trim()) {
+    } else if (["goodsName"].includes(field) && e.detail.trim()) {
       isValid = true;
     }
 
@@ -82,16 +84,16 @@ const evaluationForm: FC = () => {
     tiktokCredential = JSON.parse(tiktokCredential);
 
     let _errMap: Record<string, string> = {};
-    const { goodsUrl, videoUrl, feedback } = formData;
+    const { goodsName, goodsUrl, goodsVideoUrl } = formData;
 
+    if (!goodsName?.trim()) {
+      _errMap.goodsName = "请输入内容";
+    }
     if (!isUrl(goodsUrl)) {
       _errMap.goodsUrl = "请输入正确的链接地址";
     }
-    if (!isUrl(videoUrl)) {
-      _errMap.videoUrl = "请输入正确的链接地址";
-    }
-    if (!feedback?.trim()) {
-      _errMap.feedback = "请输入内容";
+    if (!isUrl(goodsVideoUrl)) {
+      _errMap.goodsVideoUrl = "请输入正确的链接地址";
     }
     if (!orderImages.length) {
       _errMap.orderImages = "请上传图片";
@@ -131,12 +133,14 @@ const evaluationForm: FC = () => {
       if (!(res.code === "2000" && res.result[0]))
         return;
 
-      const res1 = await request(api.postEvaluation({
+      const res1 = await request(api.postGoodsSubmission({
         userId: tiktokCredential.userId,
-        videoUrl,
+        fanUserName: tiktokUserInfo.nickname,
+        goodsName,
+        goodsVideoUrl,
         goodsUrl,
-        feedback,
-        orderPicture: res.result[0].fileRef
+        goodsImg: res.result[0].fileRef,
+        bloggerContribution: false,
       }));
 
       if (res1.code === "2000") {
@@ -170,8 +174,21 @@ const evaluationForm: FC = () => {
   return (
     <div ref={containerRef} className={styles.root}>
       <div className={styles.form}>
-        <span style={{ marginLeft: 5 }}>测评提单</span>
+        <span style={{ marginLeft: 5 }}>商品投稿</span>
         <div className={styles.card}>
+          <div className={errMap.goodsName ? styles.alert : undefined}>
+            <Field
+              value={formData.goodsName || ""}
+              clearable
+              label="商品名称"
+              required
+              placeholder="请输入内容"
+              onChange={(e) => {
+                run(e, "goodsName");
+              }}
+            />
+          </div>
+          {errMap.goodsName ? <div className={styles["alert-msg"]}>{errMap.goodsName}</div> : null}
           <div className={errMap.goodsUrl ? styles.alert : undefined}>
             <Field
               value={formData.goodsUrl || ""}
@@ -185,34 +202,19 @@ const evaluationForm: FC = () => {
             />
           </div>
           {errMap.goodsUrl ? <div className={styles["alert-msg"]}>{errMap.goodsUrl}</div> : null}
-          <div className={errMap.videoUrl ? styles.alert : undefined}>
+          <div className={errMap.goodsVideoUrl ? styles.alert : undefined}>
             <Field
-              value={formData.videoUrl || ""}
+              value={formData.goodsVideoUrl || ""}
               clearable
               required
               label="视频链接"
               placeholder="请输入链接"
               onChange={(e) => {
-                run(e, "videoUrl");
+                run(e, "goodsVideoUrl");
               }}
             />
           </div>
-          {errMap.videoUrl ? <div className={styles["alert-msg"]}>{errMap.videoUrl}</div> : null}
-          <div className={errMap.feedback ? styles.alert : undefined}>
-            <Field
-              type="textarea"
-              label="问题反馈"
-              value={formData.feedback || ""}
-              maxlength={150}
-              required
-              placeholder="请输入描述"
-              autosize={{ minHeight: "30px" }}
-              onChange={(e) => {
-                run(e, "feedback");
-              }}
-            />
-          </div>
-          {errMap.feedback ? <div className={styles["alert-msg"]}>{errMap.feedback}</div> : null}
+          {errMap.goodsVideoUrl ? <div className={styles["alert-msg"]}>{errMap.goodsVideoUrl}</div> : null}
           <div
             className={errMap.orderImages ? styles.alert : undefined}
             style={{
@@ -223,7 +225,7 @@ const evaluationForm: FC = () => {
           >
             <div style={{ marginBottom: 10, }}>
               <span className={styles["required-icon"]}>*</span>
-              <span>订单图片</span>
+              <span>商品图片</span>
             </div>
             <Uploader
               fileList={orderImages}
@@ -285,4 +287,4 @@ const evaluationForm: FC = () => {
   );
 };
 
-export default evaluationForm;
+export default submissionForm;

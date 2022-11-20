@@ -6,6 +6,12 @@
   .item-container {
     color: #555;
     font-size: 13PX;
+
+    :global {
+      a {
+        color: var(--primary-color);
+      }
+    }
   }
 
   .item-header {

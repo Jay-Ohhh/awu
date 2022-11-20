@@ -2,8 +2,11 @@ export default defineAppConfig({
   pages: [
     'pages/index/index',
     'pages/profile/index',
-    'pages/evaluation/index',
-    'pages/evaluationForm/index'
+    'pages/evaluations/index',
+    'pages/evaluationForm/index',
+    'pages/goodsSubmissions/index',
+    'pages/myGoodsSubmissions/index',
+    'pages/goodsSubmissionForm/index',
   ],
   window: {
     backgroundTextStyle: 'light',

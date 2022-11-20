@@ -39,10 +39,11 @@ export const isBrowser = !!(
 );
 
 export type User = {
+  id: string;
   nickname: string;
-  open_id: string;
+  openId: string;
   refreshExpiresIn: number;
-  isBlogger?: boolean;
+  blogger?: boolean;
   avatar?: string;
   city?: string;
   province?: string;

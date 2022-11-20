@@ -44,14 +44,24 @@ const List: FC<{ items: ItemProps[]; }> = (props) => {
                 lazyLoad
                 src={imageBaseUrl + item.orderPicture} />
             </div>
-            <div>
+            <div className="flex-1 overflow-hidden">
               <div className="flex">
-                <span>商品链接:&nbsp;</span>
-                <span className="inline-block truncate">{item.goodsUrl}</span>
+                <a className="underline" href={item.goodsUrl} target="_blank" rel="noopener">
+                  商品链接
+                </a>
+                <span>:&nbsp;</span>
+                <span className="flex-1 inline-block truncate">
+                  {item.goodsUrl}
+                </span>
               </div>
               <div className="flex">
-                <span>视频链接:&nbsp;</span>
-                <span className="inline-block truncate">{item.videoUrl}</span>
+                <a className="underline" href={item.videoUrl} target="_blank" rel="noopener">
+                  视频链接
+                </a>
+                <span>:&nbsp;</span>
+                <span className="flex-1 inline-block truncate">
+                  {item.videoUrl}
+                </span>
               </div>
               <div>
                 <span>问题反馈: </span>
@@ -65,7 +75,7 @@ const List: FC<{ items: ItemProps[]; }> = (props) => {
   );
 };
 
-const evaluation: FC = () => {
+const evaluations: FC = () => {
   const [items, setItems] = useState<ItemProps[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -75,9 +85,9 @@ const evaluation: FC = () => {
 
   const getData = async () => {
     setLoading(true);
-    const { openId } = JSON.parse(localStorage.tiktokCredential || {});
+    const { userId } = JSON.parse(localStorage.tiktokCredential || {});
     try {
-      const res = await request(api.getEvaluations({ limit, offset: offsetRef.current, openId }));
+      const res = await request(api.getEvaluations({ limit, offset: offsetRef.current, userId }));
       if (res.code === "2000" && res.result) {
         setItems(res.result.data);
         setTotal(res.result.total);
@@ -125,4 +135,4 @@ const evaluation: FC = () => {
   );
 };
 
-export default evaluation;
+export default evaluations;

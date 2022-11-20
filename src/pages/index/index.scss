@@ -1,10 +1,16 @@
+.list-page-container {
+  .taroify-pull-refresh__track {
+    height: 100%;
+  }
+}
+
 .tab-container {
   padding: 11PX 15PX;
+  height: 100%;
   overflow: auto;
 }
 
 .disable-scroll {
-  height: calc(100vh - 37PX);
   overflow: hidden;
 }
 

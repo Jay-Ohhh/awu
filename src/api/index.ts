@@ -38,7 +38,7 @@ export const api = {
   getUserInfo: (params: {
     code?: string;
     bloggerCode?: string;
-    openId?: string;
+    userId?: string;
   }): RequestOption => ({
     method: "GET",
     url: "/rest/douyin/userInfo",
@@ -59,7 +59,7 @@ export const api = {
     }
   ]),
   postEvaluation: (data: {
-    fanUserOpenId: string;
+    userId: string;
     videoUrl: string;
     goodsUrl: string;
     feedback: string;
@@ -72,7 +72,7 @@ export const api = {
   getEvaluations: (options: {
     limit: number;
     offset: number;
-    openId: string;
+    userId: string;
   }): RequestOption => ({
     method: "POST",
     url: "/rest/entities/awu_TestBillOfLading/search",
@@ -86,12 +86,70 @@ export const api = {
         "conditions": [
           {
             "operator": "=",
-            "property": "fanUserOpenId",
-            "value": options.openId
+            "property": "user",
+            "value": options.userId
           }
         ]
       }
     },
+  }),
+  getGoodsOrVideoSubmissions: (options: {
+    limit: number;
+    offset: number;
+    userId?: string;
+    bloggerSubmission: boolean;
+  }): RequestOption => {
+    const _options: RequestOption = {
+      method: "POST",
+      url: "/rest/entities/awu_Contribution/search",
+      data: {
+        "limit": options.limit,
+        "offset": options.offset,
+        "returnCount": true,
+        "filter": {
+          "group": "AND",
+          "conditions": [
+            {
+              "operator": "=",
+              "property": "bloggerContribution",
+              "value": options.bloggerSubmission
+            }
+          ]
+        }
+      }
+    };
+
+    if (options.userId) {
+      _options.data.filter.conditions.unshift({
+        "operator": "=",
+        "property": "userId",
+        "value": options.userId
+      });
+    }
+
+    return _options;
+  },
+  postGoodsSubmission: (data: {
+    "userId": string,
+    "fanUserName": string,
+    "goodsName": string,
+    "goodsUrl": string,
+    "goodsImg": string,
+    "goodsVideoUrl"?: string,
+    "bloggerVideoUrl"?: string,
+    "bloggerContribution"?: boolean,
+  }): RequestOption => ({
+    method: "POST",
+    url: "/rest/entities/awu_Contribution",
+    data
+  }),
+  voteSubmission: (data: {
+    cId: string;
+    fanUserId: string;
+  }): RequestOption => ({
+    method: "POST",
+    url: "/rest/entities/awu_Contribution/likes",
+    data
   })
 };
 

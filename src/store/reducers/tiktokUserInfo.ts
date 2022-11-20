@@ -14,7 +14,7 @@ function userInfo(state = initialState, action: Action): User | {} {
       const userInfo: Action['userInfo'] = action.userInfo;
       sessionStorage.setItem("tiktokUserInfo", JSON.stringify(userInfo));
       localStorage.setItem("tiktokCredential", JSON.stringify({
-        openId: userInfo.open_id,
+        userId: userInfo.id,
         refreshExpiresIn: userInfo.refreshExpiresIn
       }));
 

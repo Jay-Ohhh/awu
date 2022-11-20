@@ -11,7 +11,6 @@ import clsx from 'clsx';
 import { api } from "../../api";
 import { request } from "../../utils/request";
 import isMobile from "ismobilejs";
-import type { User } from "../../utils/tools";
 
 // const douyinRedirectUrl = "https://www.treedeep.cn/awu/rest/callback/douyin?bzsqm=123456";
 const douyinRedirectUrl = "https://www.treedeep.cn";
@@ -19,9 +18,7 @@ const douyinLoginUrl = 'https://open.douyin.com/platform/oauth/connect?' +
   `client_key=${DOUYIN_CLIENT_KEY}&response_type=code&scope=user_info,trial.whitelist&` +
   `redirect_uri=${douyinRedirectUrl}&state=${env}`;
 
-const mockUser: User = { avatar, nickname: "Jay", open_id: "123", refreshExpiresIn: 123 };
-
-const Profile: FC = (props) => {
+const Profile: FC = () => {
   const [bloggerCode, setBloggerCode] = useState('');
   const authWindowRef = useRef<Window>();
   const { tiktokUserInfo, setTiktokUserInfo, clearTiktokUserInfo } = useTiktokUser();
@@ -102,18 +99,29 @@ const Profile: FC = (props) => {
       <div className={clsx('v-center', styles.avatarContainer)}>
         <img className={styles.avatar} src={tiktokUserInfo.avatar || avatar} alt="user-avatar" />
         <span className={clsx("text-ellipsis", styles.nickname)}>{tiktokUserInfo.nickname}</span>
-        {tiktokUserInfo.isBlogger ? <span className={styles["tag"]}>博主</span> : null}
+        {tiktokUserInfo.blogger ? <span className={styles["tag"]}>博主</span> : null}
       </div>
       <div className={styles.group}>
         <div
           className={styles.itemContainer}
           onClick={() => {
             Taro.navigateTo({
-              url: "pages/evaluation/index"
+              url: "pages/evaluations/index"
             });
           }}
         >
           <span>我的提单</span>
+          <span className="iconfont iconyou"></span>
+        </div>
+        <div
+          className={styles.itemContainer}
+          onClick={() => {
+            Taro.navigateTo({
+              url: "pages/myGoodsSubmissions/index"
+            });
+          }}
+        >
+          <span>我的投稿</span>
           <span className="iconfont iconyou"></span>
         </div>
       </div>

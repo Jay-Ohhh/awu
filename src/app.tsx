@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useState, CSSProperties, useEffect } from 'react';
+import React, { FC, ReactElement, CSSProperties, useState, useEffect, useMemo } from 'react';
 import { Provider } from 'react-redux';
 import { useStore } from './store';
 import Taro, { eventCenter } from '@tarojs/taro';
@@ -20,47 +20,57 @@ const handleNavBarItemClick = (pathname: string) => {
   Taro.navigateTo({ url: pathname });
 };
 
-const _navBarItems: (NavBarProps['items'][0] & { needAuth?: boolean; })[] = [
-  {
-    key: 'index',
-    icon: <span className='iconfont icontubiaozhizuomoban-' style={{ fontSize: 22 }} />,
-    title: '首页',
-    onClick: () => {
-      handleNavBarItemClick('/pages/index/index');
-    }
-  },
-  {
-    key: 'evaluationForm',
-    icon: <span className='iconfont iconhot' style={{ fontSize: 22 }} />,
-    title: '测评',
-    needAuth: true,
-    onClick: () => {
-      handleNavBarItemClick('/pages/evaluationForm/index');
-    }
-  },
-  {
-    key: 'contribution',
-    icon: <span className='iconfont icontougao' style={{ fontSize: 22 }} />,
-    title: '投稿',
-    needAuth: true,
-  },
-  {
-    key: 'profile',
-    icon: <span className='iconfont icon31wode' style={{ fontSize: 20 }} />,
-    title: '我的',
-    onClick: () => {
-      handleNavBarItemClick('/pages/profile/index');
-    }
-  },
-];
+const _navBarItems: (NavBarProps['items'][0] & {
+  needAuth?: boolean;
+  bloggerAuth?: boolean;
+})[] = [
+    {
+      key: 'index',
+      icon: <span className='iconfont icontubiaozhizuomoban-' style={{ fontSize: 22 }} />,
+      title: '首页',
+      onClick: () => {
+        handleNavBarItemClick('/pages/index/index');
+      }
+    },
+    {
+      key: 'evaluationForm',
+      icon: <span className='iconfont iconhot' style={{ fontSize: 22 }} />,
+      title: '测评',
+      needAuth: true,
+      onClick: () => {
+        handleNavBarItemClick('/pages/evaluationForm/index');
+      }
+    },
+    {
+      key: 'goodsSubmissions',
+      icon: <span className='iconfont icontougao' style={{ fontSize: 22 }} />,
+      title: '商品投稿',
+      needAuth: true,
+      onClick: () => {
+        handleNavBarItemClick('/pages/goodsSubmissions/index');
+      }
+    },
+    // {
+    //   key: 'videoSubmissions',
+    //   icon: <span className='iconfont iconshipin' style={{ fontSize: 22 }} />,
+    //   title: '视频投稿',
+    //   needAuth: true,
+    //   bloggerAuth: true,
+    //   onClick: () => {
+    //     handleNavBarItemClick('/pages/videoSubmissions/index');
+    //   }
+    // },
+    {
+      key: 'profile',
+      icon: <span className='iconfont icon31wode' style={{ fontSize: 20 }} />,
+      title: '我的',
+      onClick: () => {
+        handleNavBarItemClick('/pages/profile/index');
+      }
+    },
+  ];
 
 const navBarStyle: CSSProperties = {
-  position: 'fixed',
-  left: 0,
-  right: 0,
-  bottom: 0,
-  zIndex: 1,
-  boxSizing: 'border-box',
   height: 50,
   paddingBottom: 5
 };
@@ -68,11 +78,19 @@ const navBarStyle: CSSProperties = {
 const NabBarContainer: FC = React.memo(() => {
   const { tiktokUserInfo } = useTiktokUser();
   const [activeKey, setActiveKey] = useState(location.hash.split('/')[2]);
-  let navBarItems = _navBarItems;
+  const navBarItems = useMemo(() => {
+    if (isEmpty(tiktokUserInfo)) {
+      return _navBarItems.filter(item => !item.needAuth);
+    } else {
+      return _navBarItems.filter(item => {
+        if (item.bloggerAuth) {
+          return tiktokUserInfo.blogger;
+        }
 
-  if (isEmpty(tiktokUserInfo)) {
-    navBarItems = navBarItems.filter(item => !item.needAuth);
-  }
+        return item;
+      });
+    }
+  }, [tiktokUserInfo]);
 
   useEffect(() => {
     const handleRouteChange = ({ toLocation }: { toLocation: { path: string; }; }) => {
@@ -109,10 +127,8 @@ const Auth: FC<{ children: React.ReactElement; }> = React.memo((props) => {
   return (
     <div
       style={{
-        position: "absolute",
-        top: 0,
-        bottom: 50,
-        zIndex: 2,
+        position: "relative",
+        flex: 1,
         width: "100%",
         display: (isEmpty(tiktokUserInfo) &&
           !["/pages/index/index", "/pages/profile/index"].includes(history.location.pathname)
@@ -125,6 +141,19 @@ const Auth: FC<{ children: React.ReactElement; }> = React.memo((props) => {
 
 const App: FC<{ children: ReactElement; }> = function (props) {
   const store = useStore();
+
+  useEffect(() => {
+    const setDocHeight = () => {
+      const doc = document.documentElement;
+      doc.style.setProperty('--doc-height', `${window.innerHeight}px`);
+    };
+    window.addEventListener("resize", setDocHeight);
+    setDocHeight();
+
+    return () => {
+      window.removeEventListener("resize", setDocHeight);
+    };
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -146,8 +175,8 @@ const App: FC<{ children: ReactElement; }> = function (props) {
         if (!json)
           return;
 
-        if (json.openId && json.refreshExpiresIn > Date.now()) {
-          params.openId = json.openId;
+        if (json.userId && json.refreshExpiresIn > Date.now()) {
+          params.userId = json.userId;
         }
       }
 

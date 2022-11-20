@@ -9,6 +9,8 @@
 }
 
 #app {
+  display: flex;
+  flex-direction: column;
   font-family: PingFang SC, HarmonyOS_Regular, Helvetica Neue, Microsoft YaHei, sans-serif;
 }
 
