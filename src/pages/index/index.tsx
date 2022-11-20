@@ -271,12 +271,7 @@ const Index: FC = () => {
       if (isLoading.current) return;
       showLoad && setLoading(true);
       isLoading.current = true;
-      /**
-       * 接口不规范：
-       * get方法
-       * 直接返回了数组数组，而不是 data+total+message，需要通过空数组来判断无数据
-       * 前端需要传参字段过多且不必要
-       */
+
       const res = await request(config);
       if (res.result.data.length === 0) {
         isLoadAll.current = true;
@@ -298,7 +293,7 @@ const Index: FC = () => {
     }
   };
 
-  function onPullFresh() {
+  function handleRefresh() {
     if (refresh || isLoading.current) return;
     offsetRef.current = 0;
     (async () => {
@@ -355,6 +350,11 @@ const Index: FC = () => {
         active={activeIndex}
         color='#03ceb4'
         lineWidth={120}
+        onClick={(e) => {
+          if (e.detail.index === activeIndex) {
+            handleRefresh();
+          }
+        }}
         onChange={(e) => {
           if (e.detail.index === tabList.length - 1) {
             setActiveIndex(e.detail.index);
@@ -379,10 +379,10 @@ const Index: FC = () => {
                 title={tab.title}
                 style={{ height: "100%" }}
               >
-                <PullRefresh
+                {/* <PullRefresh
                   loading={refresh}
                   reachTop={reachTop}
-                  onRefresh={onPullFresh}
+                  onRefresh={handleRefresh}
                   disabled={activeIndex === tabList.length - 1}
                   style={{ height: "100%" }}
                 >
@@ -395,31 +395,32 @@ const Index: FC = () => {
                   <PullRefresh.Loading>
                     <View className='pull-refresh-text'>加载中...</View>
                   </PullRefresh.Loading>
-                  <div
-                    className={loading ? 'tab-container disable-scroll' : 'tab-container'}
-                    // @ts-ignore
-                    onScroll={(isWeb && activeIndex !== tabList.length - 1) ? handleScroll
-                      : undefined}
-                  >
-                    {index < 3 ?
-                      <List items={items} actions={{ setImgOpen, setImgIndex }} />
-                      // <VirtualList
-                      //   height={listHeight} /* 列表的高度 */
-                      //   width='100%' /* 列表的宽度 */
-                      //   itemData={items} /* 渲染列表的数据 */
-                      //   itemCount={items.length} /*  渲染列表的长度 */
-                      //   itemSize={103}
-                      // >
-                      //   {List1}
-                      // </VirtualList>
-                      : <Draft />}
-                    {(isLoadAll.current && items.length
-                      && activeIndex !== tabList.length - 1) ?
-                      <View className='bottom-text'>已经到底了～</View> :
-                      null
-                    }
-                  </div>
-                </PullRefresh>
+
+                </PullRefresh> */}
+                <div
+                  className={loading ? 'tab-container disable-scroll' : 'tab-container'}
+                  // @ts-ignore
+                  onScroll={(isWeb && activeIndex !== tabList.length - 1) ? handleScroll
+                    : undefined}
+                >
+                  {index < 3 ?
+                    <List items={items} actions={{ setImgOpen, setImgIndex }} />
+                    // <VirtualList
+                    //   height={listHeight} /* 列表的高度 */
+                    //   width='100%' /* 列表的宽度 */
+                    //   itemData={items} /* 渲染列表的数据 */
+                    //   itemCount={items.length} /*  渲染列表的长度 */
+                    //   itemSize={103}
+                    // >
+                    //   {List1}
+                    // </VirtualList>
+                    : <Draft />}
+                  {(isLoadAll.current && items.length
+                    && activeIndex !== tabList.length - 1) ?
+                    <View className='bottom-text'>已经到底了～</View> :
+                    null
+                  }
+                </div>
               </Tab>
             );
           })
