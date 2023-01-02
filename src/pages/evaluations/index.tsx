@@ -87,7 +87,7 @@ const evaluations: FC = () => {
     setLoading(true);
     const { userId } = JSON.parse(localStorage.tiktokCredential || {});
     try {
-      const res = await request(api.getEvaluations({ limit, offset: offsetRef.current, userId }));
+      const res = await request(api.getEvaluations({ limit, offset: offsetRef.current * limit, userId }));
       if (res.code === "2000" && res.result) {
         setItems(res.result.data);
         setTotal(res.result.total);

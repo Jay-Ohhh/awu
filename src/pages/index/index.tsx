@@ -287,6 +287,7 @@ const Index: FC = () => {
 
   const handleChange = async (e: any, config: Taro.request.Option, index?: number) => {
     setActiveIndex(index ?? e.detail.index);
+
     const res = await getData(config);
     if (res.code === "2000" && res.result.data) {
       setItems(res.result.data);
@@ -299,6 +300,7 @@ const Index: FC = () => {
     (async () => {
       try {
         setRefresh(true);
+
         const res = await getData(list({
           limit,
           offset: offsetRef.current,
@@ -360,6 +362,7 @@ const Index: FC = () => {
             setActiveIndex(e.detail.index);
             return;
           }
+
           offsetRef.current = 0;
           filterValueRef.current = FilterValue[e.detail.title!];
           handleChange(e, list({

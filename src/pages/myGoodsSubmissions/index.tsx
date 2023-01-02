@@ -83,7 +83,7 @@ const ItemSubmissions: FC = () => {
     try {
       const res = await request(api.getGoodsOrVideoSubmissions({
         limit,
-        offset: offsetRef.current,
+        offset: offsetRef.current * limit,
         userId,
         bloggerSubmission: false
       }));
