@@ -35,7 +35,7 @@ const _navBarItems: (NavBarProps['items'][0] & {
     {
       key: 'evaluationForm',
       icon: <span className='iconfont iconhot' style={{ fontSize: 22 }} />,
-      title: '测评',
+      title: '购买售后',
       needAuth: true,
       onClick: () => {
         handleNavBarItemClick('/pages/evaluationForm/index');

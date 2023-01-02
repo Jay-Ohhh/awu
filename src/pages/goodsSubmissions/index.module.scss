@@ -11,6 +11,14 @@
       a {
         color: var(--primary-color);
       }
+
+      img {
+        object-fit: cover;
+      }
+
+      .iconfont {
+        font-size: 16PX;
+      }
     }
   }
 
